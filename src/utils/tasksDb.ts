@@ -1,4 +1,5 @@
-const Datastore = window.require( "nedb" );
+const Datastore = window.require('nedb-promises')
+
 import { plainToClass } from "class-transformer";
 import { Task } from "./task";
 import { DateTimeConverter } from "./dateTimeConverter";
@@ -41,7 +42,7 @@ export class TasksDb
 	async findAllAsync() : Promise<Task[]>
 	{
 		var result : Task[] = [];
-        var rawTasks : any = await this.query( db, {} );
+        var rawTasks : any = await db.find({});// await this.query( db, {} );
         result = plainToClass(Task, rawTasks);
 		return result;
     }
@@ -68,8 +69,10 @@ export class TasksDb
 	// * @description Inserts a new Task to database.
 	// * @param {Task} task 
 	// */
-	public insert( task : Task )
+	public async insert( task : Task ) : Promise<Task>
 	{
-		db.insert( task );
+		let rawTask: Task = await db.insert( task );
+		task._id = rawTask._id;
+		return task;
     }
 }
