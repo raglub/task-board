@@ -1,48 +1,37 @@
 <template>
-  <div class="board">
-    <div class="container-fluid">
-    <h2>Board</h2>
-      <div class="row mb-1 mt-1">
-        <form>
-          <div class="col">
-          
-            <div class="form-row align-items-center">
-              <b-input-group>
-                <b-form-input
-                  v-model="searchText"
-                  placeholder="Search"
-                  size="sm"
-                ></b-form-input>
-                <b-input-group-append>
-                  <b-button @click="searchTasks" size="sm" variant="primary">Search</b-button>
-                </b-input-group-append>
-              </b-input-group>
-              <b-button variant="warning" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="row">
-        <ul>
-          <li v-for="task in tasks" :key="task._id" v-show="canShowTask(task.name)">
-            {{ task.name }}
-          </li>
-        </ul>
-      </div>
-    </div>
-    <NewTask @addTask="addTask" />
-  </div>
+    <b-container class="board">
+      <h2>Board</h2>
+      <b-row class="mb-1 mt-2">
+        <b-col>
+          <b-nav-form>
+            <b-form-input size="sm" v-model="searchText" class="mr-sm-2" placeholder="Search"></b-form-input>
+            <b-button size="sm" @click="searchTasks" class="my-2 my-sm-0" type="submit">Search</b-button>
+          </b-nav-form>
+        </b-col>
+        <b-col>  
+          <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
+        </b-col>
+      </b-row>
+      <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task.name)">
+        <b-col>
+          <TaskCard v-bind:task="task" />
+        </b-col>
+      </b-row>
+      <NewTask @addTask="addTask" />
+    </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import NewTask from '@/components/NewTask.vue'
+import TaskCard from '@/components/TaskCard.vue'
 import { TasksDb } from '../utils/tasksDb'
 
 @Component({
   components: {
     NewTask,
+    TaskCard
   }
 })
 export default class Board extends Vue {
