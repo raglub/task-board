@@ -60,9 +60,11 @@ export class TasksDb
 	// * @param {string} id
 	// * @param {Task} task 
 	// */
-	public update( id : string, task : Task )
+	public async update(task : Task )
 	{
-		db.update( { _id: id }, task );
+		if(task._id === undefined)
+			throw "Id for task is undefined";
+		await db.update( { _id: task._id }, task );
 	}
 
 	///**
