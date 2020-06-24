@@ -4,12 +4,12 @@ export class Duration
 {
 	public from : number;
 
-	public to : number;
+	public to : number | null;
 
     constructor()
 	{
 		this.from = -1;
-		this.to = -1;
+		this.to = null;
 	}
 	
 	public fromToString() : string
@@ -19,6 +19,8 @@ export class Duration
 
 	public toToString() : string
 	{
+		if(this.to == null)
+			return new DateTimeConverter().toString(0);
 		return new DateTimeConverter().toString(this.to)
 	}
 	

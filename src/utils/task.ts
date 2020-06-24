@@ -63,7 +63,7 @@ export class Task
 		if( this.durations.length > 0 )
 		{
 			var duration = this.durations[this.durations.length - 1];
-			if( duration.to == undefined )
+			if( duration.to == null )
 			{
 				duration.to = Date.now();
 			}
@@ -77,7 +77,7 @@ export class Task
         
 		this.durations.forEach( function( duration : Duration)
 		{
-			if( duration.to == undefined || duration.to == null )
+			if( duration.to == null )
 			{
 				value += Date.now() - duration.from;
 			}
@@ -86,13 +86,13 @@ export class Task
 				value += duration.to - duration.from;
 			}
 		} );
-            
 		return this.toHHMMSS( value/1000 );
 	}
 
 	toHHMMSS( secs : number ) : string
 	{
-		var sec_num = secs;//parseInt( secs, 10 );
+		secs = Math.floor(secs);
+		var sec_num = secs;
 		var hours   = Math.floor( sec_num / 3600 );
 		var minutes = Math.floor( sec_num / 60 ) % 60;
 		var seconds = sec_num % 60;
