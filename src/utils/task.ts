@@ -10,7 +10,7 @@ export class Task
 
 	durations : Duration[];
 
-	isClosed : boolean | null;
+	isClosed : boolean = false;
 
 	constructor( name="none" )
 	{
