@@ -1,14 +1,16 @@
 <template>
  <b-card bg-variant="dark" text-variant="white" no-body>
   <b-card-header>
-    <span>{{ task.name }} ({{ duration}})</span>
-    <b-button class="float-right ml-1" variant="warning" size="sm">Edit</b-button>
+    <span class="align-middle">{{ task.name }} <b-badge >{{ duration }}</b-badge></span>
+    
+    <b-button class="float-right ml-1" variant="warning" size="sm"  @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
     <b-button v-if="isActive" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
     <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
   </b-card-header>
   <b-card-body>
-    ...
+    {{ task.description }}
   </b-card-body>
+  <EditTask :task="task" />
 </b-card>
 </template>
 
@@ -16,16 +18,21 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import { TasksDb } from '../utils/tasksDb'
+import EditTask from './EditTask.vue'
 
-@Component
-export default class NewTask extends Vue {
-  public name: string = '';
+@Component({
+  components: {
+    EditTask,
+  }
+})
+export default class TaskCard extends Vue {
+  public duration: string = '';
 
-  public duration: string = '00:00';
+  public interval: any;
 
   public isActive: boolean = false;
 
-  public interval: any;
+  public name: string = '';
 
   @Prop()
   private task!: Task;
