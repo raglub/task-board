@@ -1,5 +1,5 @@
 <template>
-  <b-modal :id="'modal-edit-task-' + task._id"
+  <b-modal size="lg" :id="'modal-edit-task-' + task._id"
     title="Edit Task"
     @show="resetModal"
     @hidden="resetModal"
@@ -30,22 +30,24 @@
       max-rows="6"
     ></b-form-textarea>
   </b-form-group>
-  <!--
   <b-form-group
       label="Durations:"
     >
-    <div v-for="duration in durations" class="form-row duration">
-      <div class="form-group col-md-6">
+    <div v-for="duration in durations" class="form-row ml-3 mb-3">
+      <div class="mr-2 mt-2">
         <label>From</label>
-        <input type="text" class="form-control duration-from" value="duration.fromToString()" placeholder="From">
       </div>
-      <div class="form-group col-md-6">
+      <div class="col-md-5">
+        <DateTime :datetime="duration.from" />
+      </div>
+      <div class="mr-2 ml-5 mt-2">
         <label>To</label>
-        <input type="text" class="form-control duration-to" value="duration.toToString()" placeholder="To">
+      </div>
+      <div class="">
+        <DateTime :datetime="duration.to" />
       </div>
     </div>
   </b-form-group>
-  -->
   <b-form-checkbox
     id="checkbox-1"
     v-model="isClosed"
@@ -63,8 +65,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import { Duration } from "../utils/duration";
 import { TasksDb } from '../utils/tasksDb'
+import DateTime from './DateTime.vue'
 
-@Component
+@Component({
+  components: {
+    DateTime,
+  }
+})
 export default class EditTask extends Vue {
   public description: string | undefined = '';
 
