@@ -3,7 +3,7 @@
   <b-card-header>
     <span class="align-middle">{{ task.name }} <b-badge >{{ duration }}</b-badge></span>
     
-    <b-button class="float-right ml-1" variant="warning" size="sm"  @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
+    <b-button class="float-right ml-1" variant="warning" size="sm" @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
     <b-button v-if="isActive" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
     <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
   </b-card-header>
