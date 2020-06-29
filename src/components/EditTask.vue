@@ -38,13 +38,13 @@
         <label>From</label>
       </div>
       <div class="col-md-5">
-        <DateTime :datetime="duration.from" />
+        <DateTime :datetime.sync="duration.from" />
       </div>
       <div class="mr-2 ml-5 mt-2">
         <label>To</label>
       </div>
       <div class="">
-        <DateTime :datetime="duration.to" />
+        <DateTime :datetime.sync="duration.to" />
       </div>
     </div>
   </b-form-group>
@@ -92,6 +92,7 @@ export default class EditTask extends Vue {
     this.task.name = this.name;
     this.task.description = this.description;
     this.task.durations = this.durations;
+    console.log(this.durations);
     this.task.isClosed = this.isClosed;
     new TasksDb().update(this.task);
   }
