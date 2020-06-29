@@ -71,6 +71,9 @@ export default class DateTime extends Vue {
   }
 
   onContext(ctx: any) {
+    var datetime = new Moment(this.date + " " + this.time).unix();
+    datetime *= 1000;
+    this.$emit('update:datetime', datetime)
   }
 }
 </script>

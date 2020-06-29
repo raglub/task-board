@@ -2,9 +2,9 @@ import { DateTimeConverter} from "./dateTimeConverter";
 
 export class Duration
 {
-	public from : number;
+	public from: number;
 
-	public to : number | null;
+	public to: number | null;
 
     constructor()
 	{
