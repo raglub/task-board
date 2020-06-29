@@ -33,18 +33,21 @@
   <b-form-group
       label="Durations:"
     >
-    <div v-for="duration in durations" class="form-row ml-3 mb-3">
+    <div v-for="(duration, index) in durations" :key="JSON.stringify(duration)" class="form-row ml-3 mb-3">
       <div class="mr-2 mt-2">
         <label>From</label>
       </div>
       <div class="col-md-5">
         <DateTime :datetime.sync="duration.from" />
       </div>
-      <div class="mr-2 ml-5 mt-2">
+      <div class="mr-2 ml-1 mt-2">
         <label>To</label>
       </div>
-      <div class="">
+      <div class="col">
         <DateTime :datetime.sync="duration.to" />
+      </div>
+      <div>
+        <button @click="deleteDurationAt(index)" class="btn btn-danger"><b-icon-trash-fill></b-icon-trash-fill></button>
       </div>
     </div>
   </b-form-group>
@@ -92,16 +95,20 @@ export default class EditTask extends Vue {
     this.task.name = this.name;
     this.task.description = this.description;
     this.task.durations = this.durations;
-    console.log(this.durations);
     this.task.isClosed = this.isClosed;
     new TasksDb().update(this.task);
   }
 
   public resetModal() {
     this.description = this.task.description;
-    this.durations = this.task.durations;
+    this.durations = [...this.task.durations];
     this.isClosed = this.task.isClosed;
     this.name = this.task.name;
+  }
+
+  public deleteDurationAt(index: number)
+  {
+    this.$delete(this.durations, index)
   }
 }
 </script>
