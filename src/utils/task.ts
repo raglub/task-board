@@ -12,6 +12,8 @@ export class Task
 
 	isClosed : boolean = false;
 
+	isRunning: boolean;
+
 	constructor( name="none" )
 	{
 		this.name = name;
@@ -20,6 +22,7 @@ export class Task
 		this.parentId = undefined;
 		this.durations = [];
 		this.isClosed = false;
+		this.isRunning = false; 
 	}
 	
 	static plainToClass(plain : any) : Task
@@ -34,19 +37,6 @@ export class Task
 		return result;
 	}
 
-	isActive() : boolean
-	{
-		if( this.durations.length > 0 )
-		{
-			var duration = this.durations[this.durations.length - 1];
-			if( duration.to == undefined )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	start() : void
 	{
 		var duration = new Duration();
@@ -56,10 +46,12 @@ export class Task
 			this.durations = [];
 		}
 		this.durations.push( duration );
+		this.isRunning = true;
 	}
 
 	stop() : void
 	{
+		this.isRunning = false;
 		if( this.durations.length > 0 )
 		{
 			var duration = this.durations[this.durations.length - 1];

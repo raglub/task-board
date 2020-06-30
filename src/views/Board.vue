@@ -14,7 +14,7 @@
       </b-row>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task.name)">
         <b-col>
-          <TaskCard v-bind:task="task" />
+          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
         </b-col>
       </b-row>
       <NewTask @addTask="addTask" />
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import NewTask from '@/components/NewTask.vue'
 import TaskCard from '@/components/TaskCard.vue'
@@ -52,22 +52,9 @@ export default class Board extends Vue {
   constructor() {
     super();
     this.loadTasks();
+    window.addEventListener('beforeunload', this.beforeunload)
   }
   
-  public async searchTasks()
-  {
-    console.log(this.searchText);
-
-  }
-
-  public canShowTask(name: string): boolean
-  {
-    if(this.searchText === '')
-      return true;
-    return name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
-    //return this.searchText === name;
-
-  }
 
   public async addTask(value: string)
   {
@@ -77,10 +64,36 @@ export default class Board extends Vue {
     task = await tasksDb.insert(task);
     this.tasks.push(task);
   }
+
+  public beforeunload(event: any) {
+    this.stopRunningTasks();
+  }
+
+  public canShowTask(name: string): boolean
+  {
+    if(this.searchText === '')
+      return true;
+    return name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
+  }
+
+  public async searchTasks()
+  {
+    console.log(this.searchText);
+  }
+
+  public stopRunningTasks()
+  {
+    for(var i=0; i < this.tasks.length; i++)
+    {
+      if(this.tasks[i].isRunning)
+      {
+        this.tasks[i].isRunning = false;
+      }
+    }
+  }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
 </style>

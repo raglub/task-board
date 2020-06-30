@@ -4,7 +4,7 @@
     <span class="align-middle">{{ task.name }} <b-badge >{{ duration }}</b-badge></span>
     
     <b-button class="float-right ml-1" variant="warning" size="sm" @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
-    <b-button v-if="isActive" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
+    <b-button v-if="task.isRunning" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
     <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
   </b-card-header>
   <b-card-body>
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import { TasksDb } from '../utils/tasksDb'
 import EditTask from './EditTask.vue'
@@ -30,8 +30,6 @@ export default class TaskCard extends Vue {
 
   public interval: any;
 
-  public isActive: boolean = false;
-
   public name: string = '';
 
   @Prop()
@@ -42,15 +40,23 @@ export default class TaskCard extends Vue {
     this.duration = this.task.totalDuration();
   }
 
+  @Watch('task.isRunning')
+  async onIsRunningChanged(val: boolean, oldVal: boolean) {
+    if(val == false && oldVal)
+    {
+      await this.stopTask();
+    }
+  }
+
   public async startTask()
   {
+    this.$emit("stopRunningTasks");
     this.task.start();
     
     this.interval = setInterval(() => {
         this.duration = this.task.totalDuration();
     }, 1000);
     await new TasksDb().update(this.task);
-    this.isActive = true; 
   }
 
   public async stopTask()
@@ -58,7 +64,6 @@ export default class TaskCard extends Vue {
     this.task.stop();
     clearInterval(this.interval);
     await new TasksDb().update(this.task);
-    this.isActive = false;
   }
 }
 </script>
