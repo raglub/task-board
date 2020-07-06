@@ -9,25 +9,8 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <router-link class="nav-link" to="/">Board</router-link>
-            <router-link class="nav-link" to="/">Calendar</router-link>
+            <router-link class="nav-link" to="/calendar">Calendar</router-link>
             <router-link class="nav-link" to="/about">About</router-link>
-          </b-navbar-nav>
-
-          <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
-            <b-nav-form>
-              <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-              <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-            </b-nav-form>
-
-            <b-nav-item-dropdown right>
-              <!-- Using 'button-content' slot -->
-              <template v-slot:button-content>
-                <em>User</em>
-              </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-            </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -35,6 +18,27 @@
     <router-view/>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Route } from 'vue-router'
+
+@Component({
+  components: {
+
+  }
+})
+export default class Board extends Vue {
+  constructor() {
+    super();
+  }
+  
+  @Watch('$route', { immediate: true, deep: true })
+  onUrlChange(newVal: Route) {
+    console.log(newVal);
+  }
+}
+</script>
 
 <style lang="scss">
 @import 'node_modules/bootstrap/scss/bootstrap';

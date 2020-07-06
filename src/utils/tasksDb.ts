@@ -26,16 +26,16 @@ export class TasksDb
 		} );
 	}
 
-	async findByDay(year : number, month : number, day : number) : Promise<Task[]>
+	public async findFromTo(from: Date, to: Date) : Promise<Task[]>
 	{
 		var result : Task[] = [];
 		var converter = new DateTimeConverter();
-		var from = converter.toUnix(new Date(year, month, day));
-		var rawTasks : Task[] = await this.query( db, {"durations.from" : {$gte : from}});
-		rawTasks.forEach( function( rawTask : any){
-			var task = Task.plainToClass( rawTask );
-			result.push( task );
-		} );
+		var startDate = converter.toUnix(from);
+		var endDate = converter.toUnix(to);
+		var rawTasks : Task[] = await db.find({
+			"durations.from" : {$gte : startDate},
+			$not: {"durations.to" : {$gt : endDate}}});
+		result = plainToClass(Task, rawTasks);
 		return result;
 	}
 
