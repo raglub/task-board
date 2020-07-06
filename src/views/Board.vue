@@ -12,7 +12,7 @@
           <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
         </b-col>
       </b-row>
-      <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task.name)">
+      <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
         <b-col>
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
         </b-col>
@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Route } from 'vue-router'
 import { Task } from "../utils/task";
 import NewTask from '@/components/NewTask.vue'
 import TaskCard from '@/components/TaskCard.vue'
@@ -55,6 +56,10 @@ export default class Board extends Vue {
     window.addEventListener('beforeunload', this.beforeunload)
   }
   
+  @Watch('$route', { immediate: true, deep: true })
+  onUrlChange(newVal: Route) {
+    console.log("route");
+  }
 
   public async addTask(value: string)
   {
@@ -69,11 +74,13 @@ export default class Board extends Vue {
     this.stopRunningTasks();
   }
 
-  public canShowTask(name: string): boolean
+  public canShowTask(task: Task): boolean
   {
+    if(task.isClosed)
+      return false;
     if(this.searchText === '')
       return true;
-    return name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
+    return task.name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
   }
 
   public async searchTasks()
