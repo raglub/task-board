@@ -4,12 +4,11 @@ import { plainToClass } from "class-transformer";
 import { Task } from "./task";
 import { DateTimeConverter } from "./dateTimeConverter";
 var path = require('path');
-var dbPath = path.resolve(__dirname) + "/db/tasks.db";
+var dbPath = "db/tasks.db";
 if(process.env.NODE_ENV === 'test')
 {
-	dbPath = path.resolve(__dirname) + "/db/test-tasks.db";
+	dbPath = "db/tasks.test.db";
 }
-
 let db = new Datastore({
 	filename: dbPath,
 	autoload: true 
