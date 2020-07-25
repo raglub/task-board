@@ -1,21 +1,28 @@
-const Datastore = window.require('nedb-promises')
+const Datastore = require('nedb-promises')
 
 import { plainToClass } from "class-transformer";
-import { Task } from "./task";
-import { DateTimeConverter } from "./dateTimeConverter";
+import { Task } from "../../utils/task";
+import { DateTimeConverter } from "../../utils/dateTimeConverter";
 var path = require('path');
-var dbPath = "db/tasks.db";
-if(process.env.NODE_ENV === 'test')
-{
-	dbPath = "db/tasks.test.db";
-}
-let db = new Datastore({
-	filename: dbPath,
-	autoload: true 
-});
 
-export class TasksDb
-{   
+export class TasksStore
+{
+	db: any
+
+	constructor()
+	{
+		var dbPath = `${process.cwd()}/db/tasks.db`
+		if(process.env.NODE_ENV === 'test')
+		{
+			dbPath = `${process.cwd()}/db/tasks.test.db`
+			//dbPath = "db/tasks.test.db";
+		}
+		this.db = new Datastore({
+			filename: dbPath,
+			autoload: true 
+		});
+	}
+
 	query( pkgs: any, query : any ) : Promise<Task[]> {
 		return new Promise( ( resolve, reject )=> {
 			pkgs.find( query ).exec( ( error : any, result : Task[] )=>{
@@ -31,7 +38,7 @@ export class TasksDb
 		var converter = new DateTimeConverter();
 		var startDate = converter.toUnix(from);
 		var endDate = converter.toUnix(to);
-		var rawTasks : Task[] = await db.find({
+		var rawTasks : Task[] = await this.db.find({
 			"durations.from" : {$gte : startDate},
 			$not: {"durations.to" : {$gt : endDate}}});
 		result = plainToClass(Task, rawTasks);
@@ -41,14 +48,14 @@ export class TasksDb
 	async findAllAsync() : Promise<Task[]>
 	{
 		var result : Task[] = [];
-        var rawTasks : any = await db.find({});// await this.query( db, {} );
+        var rawTasks : any = await this.db.find({});// await this.query( db, {} );
         result = plainToClass(Task, rawTasks);
 		return result;
     }
     
 	async findAsync( id : string) : Promise<Task>
 	{
-		var tasks = ( await this.query( db, { _id: id } ) );
+		var tasks = ( await this.query( this.db, { _id: id } ) );
 		var rawTask = tasks[0];
 		let task = Task.plainToClass(rawTask);
 		return task;
@@ -63,7 +70,7 @@ export class TasksDb
 	{
 		if(task._id === undefined)
 			throw "Id for task is undefined";
-		await db.update( { _id: task._id }, task );
+		await this.db.update( { _id: task._id }, task );
 	}
 
 	///**
@@ -72,7 +79,7 @@ export class TasksDb
 	// */
 	public async insert( task : Task ) : Promise<Task>
 	{
-		let rawTask: Task = await db.insert( task );
+		let rawTask: Task = await this.db.insert( task );
 		task._id = rawTask._id;
 		return task;
     }
