@@ -67,8 +67,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Task } from "../utils/task";
 import { Duration } from "../utils/duration";
-import { TasksDb } from '../utils/tasksDb'
+import { TasksStore } from '../db/stores/tasksStore'
 import DateTime from './DateTime.vue'
+const { remote } = window.require('electron')
 
 @Component({
   components: {
@@ -96,7 +97,8 @@ export default class EditTask extends Vue {
     this.task.description = this.description;
     this.task.durations = this.durations;
     this.task.isClosed = this.isClosed;
-    new TasksDb().update(this.task);
+    const tasksStore = remote.getGlobal('tasksStore');;
+    tasksStore.update(this.task);
   }
 
   public resetModal() {

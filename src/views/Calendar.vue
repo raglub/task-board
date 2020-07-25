@@ -19,9 +19,11 @@ import { CalendarResponse } from '../utils/calendarResponse';
 import { DateTimeConverter } from '../utils/dateTimeConverter';
 const Moment = require("moment");
 import { Task } from "../utils/task";
-import { TasksDb } from '../utils/tasksDb';
+import { TasksStore } from '../db/stores/tasksStore';
 const VueCal = require('vue-cal');
 import 'vue-cal/dist/vuecal.css'
+const { remote } = window.require('electron')
+
 
 @Component({
   components: {
@@ -31,13 +33,13 @@ import 'vue-cal/dist/vuecal.css'
 export default class Calendar extends Vue {
   public tasks: Task[] = [];
 
-  private tasksDb: TasksDb;
+  private tasksStore: TasksStore;
 
   public events: CalendarEvent[] = [];
   
   constructor() {
     super();
-    this.tasksDb = new TasksDb();
+    this.tasksStore = remote.getGlobal('tasksStore')
   }
 
   async updateEvents(response: CalendarResponse)
@@ -45,7 +47,7 @@ export default class Calendar extends Vue {
     var converter = new DateTimeConverter();
     var from = converter.toUnix(response.startDate);
     var to = converter.toUnix(response.endDate);
-    var tasksByDay = await this.tasksDb.findFromTo(response.startDate, response.endDate);
+    var tasksByDay = await this.tasksStore.findFromTo(response.startDate, response.endDate);
     var events : CalendarEvent[] = [];
     tasksByDay.forEach(function(task : any)
     {

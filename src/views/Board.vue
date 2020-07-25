@@ -27,7 +27,10 @@ import { Route } from 'vue-router'
 import { Task } from "../utils/task";
 import NewTask from '@/components/NewTask.vue'
 import TaskCard from '@/components/TaskCard.vue'
-import { TasksDb } from '../utils/tasksDb'
+import { TasksStore } from '../db/stores/tasksStore'
+const { remote } = window.require('electron')
+
+
 
 @Component({
   components: {
@@ -46,8 +49,8 @@ export default class Board extends Vue {
 
   public async loadTasks()
   {
-    let tasksDb = new TasksDb();
-    this.tasks = await tasksDb.findAllAsync();
+    const tasksStore: TasksStore = remote.getGlobal('tasksStore');
+    this.tasks = await tasksStore.findAllAsync();
   }
 
   constructor() {
@@ -63,10 +66,10 @@ export default class Board extends Vue {
 
   public async addTask(value: string)
   {
-    let tasksDb = new TasksDb();
+    const tasksStore: TasksStore = remote.getGlobal('tasksStore');
     let task = new Task();
     task.name = value;
-    task = await tasksDb.insert(task);
+    task = await tasksStore.insert(task);
     this.tasks.push(task);
   }
 
