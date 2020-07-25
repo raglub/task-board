@@ -17,8 +17,11 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import { Task } from "../utils/task";
-import { TasksDb } from '../utils/tasksDb'
+import { TasksStore } from '../db/stores/tasksStore'
 import EditTask from './EditTask.vue'
+const { remote } = window.require('electron')
+
+
 
 @Component({
   components: {
@@ -32,11 +35,14 @@ export default class TaskCard extends Vue {
 
   public name: string = '';
 
+  public tasksStore: TasksStore
+
   @Prop()
   private task!: Task;
 
   constructor() {
     super();
+    this.tasksStore = remote.getGlobal('tasksStore');
     this.duration = this.task.totalDuration();
   }
 
@@ -56,14 +62,14 @@ export default class TaskCard extends Vue {
     this.interval = setInterval(() => {
         this.duration = this.task.totalDuration();
     }, 1000);
-    await new TasksDb().update(this.task);
+    await this.tasksStore.update(this.task);
   }
 
   public async stopTask()
   {
     this.task.stop();
     clearInterval(this.interval);
-    await new TasksDb().update(this.task);
+    await this.tasksStore.update(this.task); 
   }
 }
 </script>

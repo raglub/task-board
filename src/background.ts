@@ -1,10 +1,14 @@
 'use strict'
 
+import { TasksStore } from './db/stores/tasksStore'
 import { app, protocol, BrowserWindow } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
+
+global.tasksStore = new TasksStore()
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -13,6 +17,8 @@ let win: BrowserWindow | null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
+
+
 
 function createWindow () {
   // Create the browser window.
