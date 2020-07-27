@@ -20,5 +20,10 @@ npm run build
 npm run test:unit
 ```
 
+### Linux environment
+```
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

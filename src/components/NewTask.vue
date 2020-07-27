@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Task } from "../utils/task";
+import { Task } from "@/utils/task";
 
 @Component
 export default class NewTask extends Vue {
