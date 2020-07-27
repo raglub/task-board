@@ -25,6 +25,10 @@ export class Task
 		this.isRunning = false; 
 	}
 	
+	static cast(rawTask: Task): Task {
+		return Object.assign(new Task(), rawTask);
+	}
+
 	static plainToClass(plain : any) : Task
 	{
 		var result = plainToClass(Task, plain)[0];
@@ -51,22 +55,24 @@ export class Task
 
 	stop() : void
 	{
-		this.isRunning = false;
-		if( this.durations.length > 0 )
+		if(this.isRunning == true)
 		{
-			var duration = this.durations[this.durations.length - 1];
-			if( duration.to == null )
+			this.isRunning = false;
+			if( this.durations.length > 0 )
 			{
-				duration.to = Date.now();
+				var duration = this.durations[this.durations.length - 1];
+				if( duration.to == null )
+				{
+					duration.to = Date.now();
+				}
+				return;
 			}
-			return;
 		}
 	}
 
-	totalDuration() : string
+	totalDuration(): string
 	{
 		var value = 0;
-        
 		this.durations.forEach( function( duration : Duration)
 		{
 			if( duration.to == null )

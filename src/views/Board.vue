@@ -27,10 +27,7 @@ import { Route } from 'vue-router'
 import { Task } from "../utils/task";
 import NewTask from '@/components/NewTask.vue'
 import TaskCard from '@/components/TaskCard.vue'
-import { TasksStore } from '../db/stores/tasksStore'
-const { remote } = window.require('electron')
-
-
+import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 
 @Component({
   components: {
@@ -47,14 +44,17 @@ export default class Board extends Vue {
 
   public canShowAddTaskModal = false;
 
+  private tasksStore: RemoteTasksStore;
+
   public async loadTasks()
   {
-    const tasksStore: TasksStore = remote.getGlobal('tasksStore');
-    this.tasks = await tasksStore.findAllAsync();
+    const tasksStore = new RemoteTasksStore()
+    this.tasks = await tasksStore.findAll();
   }
 
   constructor() {
     super();
+    this.tasksStore = new RemoteTasksStore()
     this.loadTasks();
     window.addEventListener('beforeunload', this.beforeunload)
   }
@@ -66,10 +66,9 @@ export default class Board extends Vue {
 
   public async addTask(value: string)
   {
-    const tasksStore: TasksStore = remote.getGlobal('tasksStore');
     let task = new Task();
     task.name = value;
-    task = await tasksStore.insert(task);
+    task = await this.tasksStore.insert(task);
     this.tasks.push(task);
   }
 
@@ -95,10 +94,7 @@ export default class Board extends Vue {
   {
     for(var i=0; i < this.tasks.length; i++)
     {
-      if(this.tasks[i].isRunning)
-      {
-        this.tasks[i].isRunning = false;
-      }
+      this.tasks[i].stop()
     }
   }
 }

@@ -65,11 +65,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Task } from "../utils/task";
-import { Duration } from "../utils/duration";
-import { TasksStore } from '../db/stores/tasksStore'
+import { Task } from "@/utils/task";
+import { Duration } from "@/utils/duration";
+import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import DateTime from './DateTime.vue'
-const { remote } = window.require('electron')
 
 @Component({
   components: {
@@ -85,11 +84,14 @@ export default class EditTask extends Vue {
 
   public isClosed: boolean = false;
 
+  public tasksStore: RemoteTasksStore;
+
   @Prop()
   private task!: Task;
 
   constructor() {
     super();
+    this.tasksStore = new RemoteTasksStore();
   }
 
   public handleOk(bvModalEvt: any) {
@@ -97,8 +99,7 @@ export default class EditTask extends Vue {
     this.task.description = this.description;
     this.task.durations = this.durations;
     this.task.isClosed = this.isClosed;
-    const tasksStore = remote.getGlobal('tasksStore');;
-    tasksStore.update(this.task);
+    this.tasksStore.update(this.task);
   }
 
   public resetModal() {
