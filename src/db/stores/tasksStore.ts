@@ -77,7 +77,7 @@ export class TasksStore
 	// * @description Inserts a new Task to database.
 	// * @param {Task} task 
 	// */
-	public async insert( task : Task ) : Promise<Task>
+	public async insert( task: Task ) : Promise<Task>
 	{
 		let rawTask: Task = await this.db.insert( task );
 		task._id = rawTask._id;

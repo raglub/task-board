@@ -18,12 +18,10 @@ import { CalendarEvent } from '../utils/calendarEvent';
 import { CalendarResponse } from '../utils/calendarResponse';
 import { DateTimeConverter } from '../utils/dateTimeConverter';
 const Moment = require("moment");
-import { Task } from "../utils/task";
-import { TasksStore } from '../db/stores/tasksStore';
+import { Task } from "@/utils/task";
+import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 const VueCal = require('vue-cal');
 import 'vue-cal/dist/vuecal.css'
-const { remote } = window.require('electron')
-
 
 @Component({
   components: {
@@ -33,13 +31,13 @@ const { remote } = window.require('electron')
 export default class Calendar extends Vue {
   public tasks: Task[] = [];
 
-  private tasksStore: TasksStore;
+  private tasksStore: RemoteTasksStore;
 
   public events: CalendarEvent[] = [];
   
   constructor() {
     super();
-    this.tasksStore = remote.getGlobal('tasksStore')
+    this.tasksStore = new RemoteTasksStore();
   }
 
   async updateEvents(response: CalendarResponse)

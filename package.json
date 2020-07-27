@@ -7,7 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "electron:build": "vue-cli-service electron:build --linux deb",
+    "electron:build:linux": "vue-cli-service electron:build --linux deb",
+    "electron:build:win": "vue-cli-service electron:build --win nsis",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
@@ -40,6 +41,7 @@
     "@vue/test-utils": "^1.0.3",
     "chai": "^4.1.2",
     "electron": "^9.0.0",
+    "electron-builder": "^22.2.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.2",
     "spectron": "^11.0.0",

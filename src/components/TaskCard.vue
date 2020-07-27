@@ -16,12 +16,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import { Task } from "../utils/task";
-import { TasksStore } from '../db/stores/tasksStore'
+import { Task } from "@/utils/task";
+import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import EditTask from './EditTask.vue'
-const { remote } = window.require('electron')
-
-
 
 @Component({
   components: {
@@ -35,14 +32,14 @@ export default class TaskCard extends Vue {
 
   public name: string = '';
 
-  public tasksStore: TasksStore
+  public tasksStore: RemoteTasksStore
 
   @Prop()
   private task!: Task;
 
   constructor() {
     super();
-    this.tasksStore = remote.getGlobal('tasksStore');
+    this.tasksStore = new RemoteTasksStore();
     this.duration = this.task.totalDuration();
   }
 
@@ -69,7 +66,8 @@ export default class TaskCard extends Vue {
   {
     this.task.stop();
     clearInterval(this.interval);
-    await this.tasksStore.update(this.task); 
+    this.task.isRunning = false;
+    await this.tasksStore.update(this.task);
   }
 }
 </script>
