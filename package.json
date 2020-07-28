@@ -8,8 +8,11 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "electron:build:linux": "vue-cli-service electron:build --linux deb",
+    "electron:build:mac": "vue-cli-service electron:build --mac dmg",
     "electron:build:win": "vue-cli-service electron:build --win nsis",
+    "electron:build": "vue-cli-service electron:build --win nsis --linux deb --mac -p always",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:serve:debug": "DEBUG=true vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
