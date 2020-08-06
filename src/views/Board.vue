@@ -17,7 +17,7 @@
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
         </b-col>
       </b-row>
-      <NewTask @addTask="addTask" />
+      <new-task @addTask="addTask" />
     </b-container>
 </template>
 

@@ -51,10 +51,6 @@ Make all platform build
 ```
 GH_TOKEN=<SECRET_TOKEN> npm run electron:build
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
 ---
 
 ## License
@@ -62,4 +58,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 - **[MIT license](https://opensource.org/licenses/MIT)**
-- Copyright © 2020-present, 2020 Michał Szyma
+- Copyright © 2020-present, Michał Szyma
