@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <b-navbar toggleable="lg" type="dark" variant="dark">
+      <b-navbar toggleable="sm" type="dark" variant="dark">
         <b-navbar-brand href="#">Task Board</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
