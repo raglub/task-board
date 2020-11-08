@@ -1,5 +1,5 @@
 import { TasksStore } from './tasksStore';
-import { Task } from '@/utils/task';
+import Task from '@/models/task';
 const { remote } = window.require('electron')
 
 export class RemoteTasksStore

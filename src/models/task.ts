@@ -1,7 +1,7 @@
-import { Duration } from "./duration";
+import { Duration } from "@/utils/duration";
 import { plainToClass } from "class-transformer";
 
-export class Task
+export default class Task
 {
 	name : string;
 	description : string | undefined;

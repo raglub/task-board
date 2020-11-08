@@ -1,7 +1,7 @@
 const Datastore = require('nedb-promises')
 
 import { plainToClass } from "class-transformer";
-import { Task } from "../../utils/task";
+import Task from "@/models/task";
 import { DateTimeConverter } from "../../utils/dateTimeConverter";
 var path = require('path');
 

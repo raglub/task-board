@@ -23,7 +23,7 @@ import { VueCalCard } from '@/utils/vueCalCard';
 import CalendarEventModal from '@/components/CalendarEventModal.vue'
 import { DateTimeConverter } from '../utils/dateTimeConverter';
 const Moment = require("moment");
-import { Task } from "@/utils/task";
+import Task from "@/models/task";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 const VueCal = require('vue-cal');
 import 'vue-cal/dist/vuecal.css'
