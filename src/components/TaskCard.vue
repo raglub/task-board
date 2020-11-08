@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import { Task } from "@/utils/task";
+import Task from "@/models/task";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import EditTask from './EditTask.vue'
 
