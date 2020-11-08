@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Task } from "@/utils/task";
+import Task from "@/models/task";
 import { Duration } from "@/utils/duration";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import DateTime from './DateTime.vue'

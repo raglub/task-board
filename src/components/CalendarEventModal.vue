@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Task } from "@/utils/task";
+import Task from "@/models/task";
 import { VueCalEvent } from '@/utils/vueCalEvent'
 
 @Component

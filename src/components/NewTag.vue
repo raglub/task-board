@@ -1,6 +1,6 @@
 <template>
-  <b-modal id="modal-new-task"
-    title="New Task"
+  <b-modal id="modal-new-tag"
+    title="New Tag"
     @show="resetModal"
     @hidden="resetModal"
     @ok="handleOk"
@@ -29,6 +29,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Task from "@/models/task";
+import { ActionTypes } from '@/store/action-types';
+import Tag from '@/models/tag';
 
 @Component
 export default class NewTask extends Vue {
@@ -39,7 +41,9 @@ export default class NewTask extends Vue {
   }
 
   public handleOk(bvModalEvt: any) {
-    this.$emit('addTask', this.name);
+    const tag = new Tag()
+    tag.name = this.name
+    this.$store.dispatch(ActionTypes.CreateTag, tag)
   }
 
   public resetModal() {

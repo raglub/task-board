@@ -9,7 +9,8 @@
           </b-nav-form>
         </b-col>
         <b-col>  
-          <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
+          <b-button variant="warning" class="float-right pl-1" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
+          <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-tag>Add Tag</b-button>
         </b-col>
       </b-row>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
@@ -17,22 +18,25 @@
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
         </b-col>
       </b-row>
-      <new-task @addTask="addTask" />
+      <new-task @addTask="addTask"/>
+      <new-tag/>
     </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Route } from 'vue-router'
-import { Task } from "../utils/task";
+import Task from "@/models/task";
 import NewTask from '@/components/NewTask.vue'
+import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 
 @Component({
   components: {
     NewTask,
-    TaskCard
+    TaskCard,
+    NewTag
   }
 })
 export default class Board extends Vue {
