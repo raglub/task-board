@@ -31,6 +31,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Task from "@/models/task";
 import { ActionTypes } from '@/store/action-types';
 import Tag from '@/models/tag';
+import { Actions } from '@/store/actions';
+import { IpcInvoker } from '@/utils/ipc-invoker'
 
 @Component
 export default class NewTask extends Vue {
@@ -40,10 +42,10 @@ export default class NewTask extends Vue {
     super();
   }
 
-  public handleOk(bvModalEvt: any) {
+  public async handleOk(bvModalEvt: any) {
     const tag = new Tag()
     tag.name = this.name
-    this.$store.dispatch(ActionTypes.CreateTag, tag)
+    const newTag = await IpcInvoker.createTag(tag.name)
   }
 
   public resetModal() {
