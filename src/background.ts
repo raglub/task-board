@@ -1,12 +1,18 @@
 'use strict'
 import { TasksStore } from './db/stores/tasksStore'
 import { app, protocol, BrowserWindow } from 'electron'
+import { IpcTypes } from '@/utils/ipc-types'
 import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 
 global.tasksStore = new TasksStore()
+
+import { ipcMain } from 'electron';
+import { IpcHandler } from './utils/ipc-handler'
+
+ipcMain.handle(IpcTypes.CreateTag, async (event, arg) => IpcHandler.createTag(arg))
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -16,8 +22,6 @@ let win: BrowserWindow | null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
-
-
 
 function createWindow () {
   // Create the browser window.

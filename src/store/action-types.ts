@@ -1,3 +1,3 @@
 export enum ActionTypes {
-    CreateTag = 'CreateTag',
+    CreateTag = 'createTag',
 }
