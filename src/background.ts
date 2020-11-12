@@ -27,11 +27,16 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ minWidth: 1024, width: 1024, minHeight: 768, height: 768, webPreferences: {
+  win = new BrowserWindow({ 
+    minWidth: 1024,
+    width: 1024,
+    minHeight: 768,
+    height: 768,
+    webPreferences: {
     // Use pluginOptions.nodeIntegration, leave this alone
     // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
     nodeIntegration: true,
-    enableRemoteModule: true
+    enableRemoteModule: true,
   } })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
