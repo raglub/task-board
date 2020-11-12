@@ -14,6 +14,8 @@ import { IpcHandler } from './utils/ipc-handler'
 
 ipcMain.handle(IpcTypes.CreateTag, async (event, arg) => IpcHandler.createTag(arg))
 
+ipcMain.handle(IpcTypes.GetAllTags, async (event, arg) => IpcHandler.getAllTags())
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -25,7 +27,7 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
+  win = new BrowserWindow({ minWidth: 1024, width: 1024, minHeight: 768, height: 768, webPreferences: {
     // Use pluginOptions.nodeIntegration, leave this alone
     // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
     nodeIntegration: true,

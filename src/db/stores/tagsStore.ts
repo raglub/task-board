@@ -23,7 +23,8 @@ export class TagsStore
 
 	async findAllAsync() : Promise<Tag[]>
 	{
-        var result: Tag[] = await this.db.find({});
+		let result: Tag[] = await this.db.find({});
+		result.sort((a, b) => a.name.localeCompare(b.name))
 		return result;
     }
 

@@ -1,3 +1,4 @@
 export enum IpcTypes {
-    CreateTag = 'createTag'
+    CreateTag = 'createTag',
+    GetAllTags = 'getAllTags'
 }
