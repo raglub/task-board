@@ -1,5 +1,6 @@
-export const state = {
-    counter: 0,
-  }
-  
-  export type State = typeof state
+import Task from '@/models/task'
+
+export interface RootState {
+  counter: number
+  tasks: Task[]
+}

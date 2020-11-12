@@ -31,6 +31,7 @@ import NewTask from '@/components/NewTask.vue'
 import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
+import { Actions } from '@/store/actions';
 
 @Component({
   components: {
@@ -53,16 +54,19 @@ export default class Board extends Vue {
   public async loadTasks()
   {
     const tasksStore = new RemoteTasksStore()
-    this.tasks = await tasksStore.findAll();
+    this.tasks = await Actions.loadTasks(this, undefined)
   }
 
   constructor() {
     super();
     this.tasksStore = new RemoteTasksStore()
+  }
+  
+  mounted() {
     this.loadTasks();
     window.addEventListener('beforeunload', this.beforeunload)
   }
-  
+
   @Watch('$route', { immediate: true, deep: true })
   onUrlChange(newVal: Route) {
     console.log("route");

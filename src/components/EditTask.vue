@@ -1,7 +1,7 @@
 <template>
   <b-modal size="lg" :id="'modal-edit-task-' + task._id"
     title="Edit Task"
-    @show="resetModal"
+    @show="showModal"
     @hidden="resetModal"
     @ok="handleOk"
   >
@@ -29,6 +29,11 @@
       rows="3"
       max-rows="6"
     ></b-form-textarea>
+  </b-form-group>
+  <b-form-group label="Tags:">
+    <b-form-checkbox-group id="tags-group" v-model="selectedTags" name="flavour-2">
+      <b-form-checkbox v-for="tag in tags" :key="tag._id" :value="tag">{{ tag.name }}</b-form-checkbox>
+    </b-form-checkbox-group>
   </b-form-group>
   <b-form-group
       label="Durations:"
@@ -69,6 +74,8 @@ import Task from "@/models/task";
 import { Duration } from "@/utils/duration";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import DateTime from './DateTime.vue'
+import Tag from '@/models/tag';
+import { IpcInvoker } from '@/utils/ipc-invoker';
 
 @Component({
   components: {
@@ -89,9 +96,21 @@ export default class EditTask extends Vue {
   @Prop()
   private task!: Task;
 
+  public tags: Tag[] = []
+
+  public selectedTags: Tag[] = []
+
   constructor() {
     super();
     this.tasksStore = new RemoteTasksStore();
+  }
+
+  mounted() {
+    this.loadView()
+  }
+
+  async loadView() {
+    
   }
 
   public handleOk(bvModalEvt: any) {
@@ -99,6 +118,7 @@ export default class EditTask extends Vue {
     this.task.description = this.description;
     this.task.durations = this.durations;
     this.task.isClosed = this.isClosed;
+    this.task.tagIds = this.selectedTags.map(el => el._id) as string[]
     this.tasksStore.update(this.task);
   }
 
@@ -107,6 +127,19 @@ export default class EditTask extends Vue {
     this.durations = [...this.task.durations];
     this.isClosed = this.task.isClosed;
     this.name = this.task.name;
+    this.selectedTags.length = 0
+  }
+
+  async showModal() {
+    this.tags = await IpcInvoker.getAllTags()
+    const selectedTags = this.tags.filter(el => this.task.tagIds.indexOf(el._id as string) > -1)
+    this.selectedTags.length = 0
+    this.selectedTags.push(...selectedTags)
+    this.description = this.task.description;
+    this.durations = [...this.task.durations];
+    this.isClosed = this.task.isClosed;
+    this.name = this.task.name;
+    this.selectedTags = this.tags
   }
 
   public deleteDurationAt(index: number)
