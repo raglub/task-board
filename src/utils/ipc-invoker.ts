@@ -7,4 +7,8 @@ export const IpcInvoker: IpcTemplate = class IpcInvoker {
     static async [IpcTypes.CreateTag] (name: string): Promise<Tag> {
         return await ipcRenderer.invoke(IpcTypes.CreateTag, name);
     }
+
+    static async [IpcTypes.GetAllTags] (): Promise<Tag[]> {
+        return await ipcRenderer.invoke(IpcTypes.GetAllTags);
+    }
 }

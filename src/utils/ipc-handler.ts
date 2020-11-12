@@ -13,4 +13,8 @@ export const IpcHandler: IpcTemplate = class IpcHandler {
     await this.tagsStore.insert(tag)
     return tag
   }
+
+  static async [IpcTypes.GetAllTags] (): Promise<Tag[]> {
+    return await this.tagsStore.findAllAsync()
+  }
 }

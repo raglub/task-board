@@ -14,6 +14,8 @@ export default class Task
 
 	isRunning: boolean;
 
+	tagIds: string[] = []
+
 	constructor( name="none" )
 	{
 		this.name = name;
