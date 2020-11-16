@@ -2,6 +2,7 @@ const Datastore = require('nedb-promises')
 
 import { plainToClass } from "class-transformer";
 import Tag from "@/models/tag";
+import RootDir from '@/utils/rootDir';
 var path = require('path');
 
 export class TagsStore
@@ -10,10 +11,10 @@ export class TagsStore
 
 	constructor()
 	{
-		var dbPath = `${process.cwd()}/db/tags.db`
+		let dbPath = RootDir.combine('db/tags.db')
 		if(process.env.NODE_ENV === 'test')
 		{
-			dbPath = `${process.cwd()}/db/tags.test.db`
+			dbPath = RootDir.combine('db/tasks.test.db')
 		}
 		this.db = new Datastore({
 			filename: dbPath,

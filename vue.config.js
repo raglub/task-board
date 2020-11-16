@@ -16,10 +16,9 @@ module.exports = {
                     icon: 'assets/icons/linux/icon.icns',
                     target: [
                         {
-                          "target": "deb",
-                          "arch": [
-                            "x64",
-                            "ia32"
+                          target: "deb",
+                          arch: [
+                            "x64"
                           ]
                         }
                     ],
