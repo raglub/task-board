@@ -13,6 +13,15 @@
           <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-tag>Add Tag</b-button>
         </b-col>
       </b-row>
+      <b-row class="mb-1 mt-2">
+        <b-col>
+          <b-form-group label="Tags:">
+            <b-form-checkbox-group id="tags-group" v-model="selectedTags" name="flavour-2">
+              <b-form-checkbox v-for="tag in tags" :key="tag._id" :value="tag">{{ tag.name }}</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
         <b-col>
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
@@ -32,6 +41,8 @@ import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { Actions } from '@/store/actions';
+import Tag from '@/models/tag';
+import { IpcInvoker } from '@/utils/ipc-invoker';
 
 @Component({
   components: {
@@ -49,12 +60,19 @@ export default class Board extends Vue {
 
   public canShowAddTaskModal = false;
 
+  public tags: Tag[] = []
+
+  public selectedTags: Tag[] = []
+
   private tasksStore: RemoteTasksStore;
 
   public async loadTasks()
   {
     const tasksStore = new RemoteTasksStore()
     this.tasks = await Actions.loadTasks(this, undefined)
+    const tags = await IpcInvoker.getAllTags()
+    this.tags.push(...tags)
+    this.selectedTags.push(...tags)
   }
 
   constructor() {
@@ -88,6 +106,18 @@ export default class Board extends Vue {
   {
     if(task.isClosed)
       return false;
+    const tags = this.selectedTags
+    const selectedTagIds = tags.map(item => item._id)
+    let tagIsSelected = false
+    selectedTagIds.forEach(id => {
+      if (task.tagIds.indexOf(id) > -1) {
+        tagIsSelected = true
+        return
+      }
+    });
+    if (!tagIsSelected) {
+      return false
+    }
     if(this.searchText === '')
       return true;
     return task.name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
