@@ -3,6 +3,7 @@ const Datastore = require('nedb-promises')
 import { plainToClass } from "class-transformer";
 import Task from "@/models/task";
 import { DateTimeConverter } from "../../utils/dateTimeConverter";
+import RootDir from '@/utils/rootDir';
 var path = require('path');
 
 export class TasksStore
@@ -11,11 +12,10 @@ export class TasksStore
 
 	constructor()
 	{
-		var dbPath = `${process.cwd()}/db/tasks.db`
+		var dbPath = RootDir.combine('db/tasks.db')
 		if(process.env.NODE_ENV === 'test')
 		{
-			dbPath = `${process.cwd()}/db/tasks.test.db`
-			//dbPath = "db/tasks.test.db";
+			dbPath = RootDir.combine('db/tasks.test.db')
 		}
 		this.db = new Datastore({
 			filename: dbPath,
