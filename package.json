@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit",
     "electron:build:linux": "vue-cli-service electron:build --linux",
     "electron:build:mac": "vue-cli-service electron:build --mac dmg",
-    "electron:build:win": "vue-cli-service electron:build --win nsis",
+    "electron:build:win": "vue-cli-service electron:build --win nsis --x64",
     "electron:build": "vue-cli-service electron:build --win nsis --linux deb --mac -p always",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:serve:debug": "DEBUG=true vue-cli-service electron:serve",

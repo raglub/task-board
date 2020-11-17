@@ -33,6 +33,7 @@ import { ActionTypes } from '@/store/action-types';
 import Tag from '@/models/tag';
 import { Actions } from '@/store/actions';
 import { IpcInvoker } from '@/utils/ipc-invoker'
+import CreateTagDto from '@/dtos/create-tag-dto'
 
 @Component
 export default class NewTask extends Vue {
@@ -43,7 +44,7 @@ export default class NewTask extends Vue {
   }
 
   public async handleOk(bvModalEvt: any) {
-    const tag = new Tag()
+    const tag = new CreateTagDto()
     tag.name = this.name
     const newTag = await IpcInvoker.createTag(tag.name)
   }
