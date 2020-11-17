@@ -1,4 +1,4 @@
 #!/bin/bash
 png2icns linux/icon.icns png/icon.png
 png2icns mac/icon.icns png/icon.png
-convert -background transparent "png/icon.png" -define icon:auto-resize=32 "win/icon.ico"
+convert -background transparent "png/icon.png" -define icon:auto-resize=256 "win/icon.ico"

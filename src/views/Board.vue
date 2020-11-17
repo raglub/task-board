@@ -72,7 +72,6 @@ export default class Board extends Vue {
     this.tasks = await Actions.loadTasks(this, undefined)
     const tags = await IpcInvoker.getAllTags()
     this.tags.push(...tags)
-    this.selectedTags.push(...tags)
   }
 
   constructor() {
@@ -109,14 +108,16 @@ export default class Board extends Vue {
     const tags = this.selectedTags
     const selectedTagIds = tags.map(item => item._id)
     let tagIsSelected = false
-    selectedTagIds.forEach(id => {
-      if (task.tagIds.indexOf(id) > -1) {
-        tagIsSelected = true
-        return
+    if (selectedTagIds.length > 0) {
+      selectedTagIds.forEach(id => {
+        if (task.tagIds.indexOf(id) > -1) {
+          tagIsSelected = true
+          return
+        }
+      });
+      if (!tagIsSelected) {
+        return false
       }
-    });
-    if (!tagIsSelected) {
-      return false
     }
     if(this.searchText === '')
       return true;

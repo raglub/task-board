@@ -3,6 +3,7 @@ const Datastore = require('nedb-promises')
 import { plainToClass } from "class-transformer";
 import Tag from "@/models/tag";
 import RootDir from '@/utils/rootDir';
+import CreateTagDto from '@/dtos/create-tag-dto';
 var path = require('path');
 
 export class TagsStore
@@ -29,10 +30,13 @@ export class TagsStore
 		return result;
     }
 
-	public async insert( tag: Tag ) : Promise<Tag>
+	public async insert( tag: CreateTagDto ) : Promise<Tag>
 	{
-		let newTag: Tag = await this.db.insert( tag );
-		tag._id = newTag._id;
-		return tag;
+		let newTag = new Tag()
+		newTag._id = undefined as any
+		newTag.description = tag.description
+		newTag.name = tag.name
+		newTag = await this.db.insert( newTag );
+		return newTag;
     }
 }
