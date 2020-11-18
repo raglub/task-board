@@ -27,7 +27,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node_version }}
-
+    - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: npm install, build and test
       run: |
         npm install
+        echo $RELEASE_VERSION
+        echo ${{ env.RELEASE_VERSION }}
+        git describe
