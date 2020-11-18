@@ -28,7 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
     - name: Set env
-        run: echo "RELEASE_VERSION=${git describe}"
+        run: echo "$(git describe --tags)"
     - name: npm install, build and test
       run: |
         npm install
