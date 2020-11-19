@@ -49,3 +49,4 @@ jobs:
       run: |
         npm install
         npm run electron:build:linux
+        npm run electron:build:win
