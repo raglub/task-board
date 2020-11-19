@@ -4,7 +4,7 @@ module.exports = {
             builderOptions: {
                 appId: "dev.szyma.task-board",
                 productName: 'Task Board',
-                copyright: 'Copyright 2020 Michał Szyma',
+                copyright: "Copyright © 2020 ${author}",
                 publish: {
                     provider: "github",
                     owner: "raglub",
