@@ -29,7 +29,6 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Set env
       run: |
-          echo "RELEASE_VERSION=$(git describe --tags)" >> $GITHUB_ENV
           GIT_DESCRIBE="$(git describe --tags)"
           IFS='-' read -r -a CHUNKS <<< "$GIT_DESCRIBE"
           TAG=${CHUNKS[0]}
@@ -38,6 +37,14 @@ jobs:
           echo $TAG
           echo $TAG_DISTANCE
           echo $COMMIT_HASH
+          sed -i "s/\"version\": \".*\"/\"version\": \"$TAG\"/" package.json
+          if [ $TAG_DISTANCE -gt 0 ]
+          then
+            sed -i "s/\"version\": \".*\"/\"version\": \"$TAG\"/" package.json
+          else
+            sed -i "s/\"version\": \".*\"/\"version\": \"$TAG+$TAG_DISTANCE-$COMMIT_HASH\"/" package.json
+          fi
     - name: npm install, build and test
       run: |
         npm install
+        npm run electron:build:linux
