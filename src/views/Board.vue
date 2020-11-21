@@ -15,13 +15,14 @@
       </b-row>
       <b-row class="mb-1 mt-2">
         <b-col>
-          <b-form-group label="Tags:">
-            <b-form-checkbox-group id="tags-group" v-model="selectedTags" name="flavour-2">
-              <b-form-checkbox v-for="tag in tags" :key="tag._id" :value="tag">{{ tag.name }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
+          <tag-list v-model="selectedTagIds"></tag-list>
         </b-col>
       </b-row>
+      <b-form-checkbox
+        v-model="filter.showClosed"
+      >
+        Show closed
+      </b-form-checkbox>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
         <b-col>
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
@@ -39,16 +40,20 @@ import Task from "@/models/task";
 import NewTask from '@/components/NewTask.vue'
 import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
+import TagList from '@/components/TagList.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { Actions } from '@/store/actions';
 import Tag from '@/models/tag';
 import { IpcInvoker } from '@/utils/ipc-invoker';
+import { Guid16 } from '@/types/guid16';
+import TestStepFilter from '@/utils/test-steps-filter'
 
 @Component({
   components: {
     NewTask,
     TaskCard,
-    NewTag
+    NewTag,
+    TagList
   }
 })
 export default class Board extends Vue {
@@ -58,11 +63,11 @@ export default class Board extends Vue {
   public tasks: Task[] = [];
   public isLoading: boolean = false;
 
+  public filter: TestStepFilter
+
   public canShowAddTaskModal = false;
 
-  public tags: Tag[] = []
-
-  public selectedTags: Tag[] = []
+  public selectedTagIds: Guid16[] = []
 
   private tasksStore: RemoteTasksStore;
 
@@ -70,12 +75,11 @@ export default class Board extends Vue {
   {
     const tasksStore = new RemoteTasksStore()
     this.tasks = await Actions.loadTasks(this, undefined)
-    const tags = await IpcInvoker.getAllTags()
-    this.tags.push(...tags)
   }
 
   constructor() {
     super();
+    this.filter = new TestStepFilter()
     this.tasksStore = new RemoteTasksStore()
   }
   
@@ -89,11 +93,8 @@ export default class Board extends Vue {
     console.log("route");
   }
 
-  public async addTask(value: string)
+  public async addTask(task: Task)
   {
-    let task = new Task();
-    task.name = value;
-    task = await this.tasksStore.insert(task);
     this.tasks.push(task);
   }
 
@@ -103,13 +104,12 @@ export default class Board extends Vue {
 
   public canShowTask(task: Task): boolean
   {
-    if(task.isClosed)
+    if(task.isClosed && !this.filter.showClosed)
       return false;
-    const tags = this.selectedTags
-    const selectedTagIds = tags.map(item => item._id)
+
     let tagIsSelected = false
-    if (selectedTagIds.length > 0) {
-      selectedTagIds.forEach(id => {
+    if (this.selectedTagIds.length > 0) {
+      this.selectedTagIds.forEach(id => {
         if (task.tagIds.indexOf(id) > -1) {
           tagIsSelected = true
           return
