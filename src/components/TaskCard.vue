@@ -1,7 +1,10 @@
 <template>
  <b-card bg-variant="dark" text-variant="white" no-body>
   <b-card-header>
-    <span class="align-middle">{{ task.name }} <b-badge >{{ duration }}</b-badge></span>
+    <span class="align-middle">
+    <span v-if="task.isClosed" class="text-danger"><del>{{ task.name }}</del></span>
+    <span v-else>{{ task.name }}</span>
+    <b-badge class="ml-2">{{ duration }}</b-badge></span>
     
     <b-button class="float-right ml-1" variant="warning" size="sm" @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
     <b-button v-if="task.isRunning" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>

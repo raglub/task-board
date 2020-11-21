@@ -14,7 +14,6 @@
       placeholder="Enter your name"
       trim
     ></b-form-input>
-
     <!-- This will only be shown if the preceding input has an invalid state -->
     <b-form-invalid-feedback id="input-live-feedback">
       Enter at least 3 letters
@@ -22,24 +21,39 @@
 
     <!-- This is a form text block (formerly known as help block) -->
     <b-form-text id="input-live-help">Your full name.</b-form-text>
+    <tag-list v-model="selectedTagIds"></tag-list>
   </div>
   </b-modal>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import TagList from '@/components/TagList.vue'
 import Task from "@/models/task";
+import { Guid16 } from '@/types/guid16';
+import { RemoteTasksStore } from '@/db/stores/remoteTasksStore';
 
-@Component
+@Component({
+  components: {
+    TagList
+  }
+})
 export default class NewTask extends Vue {
   public name: string = '';
+
+  public selectedTagIds: Guid16[] = []
 
   constructor() {
     super();
   }
 
-  public handleOk(bvModalEvt: any) {
-    this.$emit('addTask', this.name);
+  public async handleOk(bvModalEvt: any) {
+    let task = new Task();
+    task.name = this.name;
+    task.tagIds = this.selectedTagIds
+    const tasksStore = new RemoteTasksStore()
+    task = await tasksStore.insert(task);
+    this.$emit('addTask', task);
   }
 
   public resetModal() {
