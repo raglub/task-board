@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-2019, ubuntu-20.04]
         node_version: ['10']
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,25 +29,18 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
     - name: Set env
-      run: |
-          GIT_DESCRIBE="$(git describe --tags)"
-          IFS='-' read -r -a CHUNKS <<< "$GIT_DESCRIBE"
-          VERSION=${CHUNKS[0]:1}
-          TAG_DISTANCE=${CHUNKS[1]}
-          COMMIT_HASH=${CHUNKS[2]:1}
-          echo "Version: $VERSION"
-          echo "Distance: $TAG_DISTANCE"
-          echo "Commit hash: $COMMIT_HASH"
-          if [ $TAG_DISTANCE -gt 0 ]
-          then
-            sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
-          else
-            sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION+$TAG_DISTANCE-$COMMIT_HASH\"/" package.json
-          fi
-    - name: npm install, build and test
+      run: node version-changer.js
+    - name: npm install, build and test (windows-only) 
       env:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      if: contains(matrix.os, 'window')
+      run: |
+        npm install
+        npm run electron:build:win
+    - name: npm install, build and test (linux-only) 
+      env:
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      if: contains(matrix.os, 'ubuntu')
       run: |
         npm install
         npm run electron:build:linux
-        npm run electron:build:win

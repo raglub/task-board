@@ -2,6 +2,7 @@
   "name": "task-board",
   "author": "Michał Szyma <michal@szyma.dev>",
   "version": "0.1.0",
+  "commitHash": "000000",
   "description": "This is a task management tool",
   "license": "MIT",
   "scripts": {
