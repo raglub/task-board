@@ -14,7 +14,14 @@ async function changeVersion () {
   }
 
   process.env['APP_VERSION'] = version
+  fs.writeFile('version.txt', version, 'utf8', function (err) {
+    if (err) return console.log(err);
+  });
   process.env['LATEST_TAG_DISTANCE'] = distance
+  fs.writeFile('tag_distance.txt', distance, 'utf8', function (err) {
+    if (err) return console.log(err);
+  });
+
   console.log(`version: ${version}`)
   console.log(`distance: ${distance}`)
   console.log(`commitHash: ${commitHash}`)
