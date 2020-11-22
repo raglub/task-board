@@ -37,15 +37,17 @@ jobs:
       run: |
         echo ${LATEST_TAG_DISTANCE}
         npm install
-        npm run electron:build:win
+        npm run electron:build:win -- -p always
     - name: npm install, build and test (linux-only) 
       env:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       if: contains(matrix.os, 'ubuntu')  
       run: |
         npm install
-        npm run electron:build:linux
+        npm run electron:build:linux -- -p always
     - uses: actions/upload-artifact@v2
       with:
         name: task-board-${{ matrix.os }}
-        path: dist_electron/task-board*.(deb|exe)
+        path: |
+          dist_electron/task-board*.deb
+          dist_electron/task-board*.exe
