@@ -35,12 +35,24 @@ jobs:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       if: contains(matrix.os, 'window')
       run: |
+        echo ${LATEST_TAG_DISTANCE}
         npm install
         npm run electron:build:win
-    - name: npm install, build and test (linux-only) 
+    - name: npm install, build and test (linux-only and ready to release) 
       env:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      if: contains(matrix.os, 'ubuntu')
+      if: contains(matrix.os, 'ubuntu') && ${LATEST_TAG_DISTANCE} == '0'  
       run: |
+        echo ${LATEST_TAG_DISTANCE}
         npm install
         npm run electron:build:linux
+    - name: npm install, build and test (linux-only and only build) 
+      if: contains(matrix.os, 'ubuntu') && ${LATEST_TAG_DISTANCE} != '0'  
+      run: |
+        echo ${LATEST_TAG_DISTANCE}
+        npm install
+        npm run electron:build:linux
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: dist_electron/task-board*.deb  
