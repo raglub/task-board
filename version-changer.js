@@ -13,6 +13,8 @@ async function changeVersion () {
     version += `+${distance}-${commitHash}`
   }
 
+  process.env['APP_VERSION'] = version
+  process.env['LATEST_TAG_DISTANCE'] = distance
   console.log(`version: ${version}`)
   console.log(`distance: ${distance}`)
   console.log(`commitHash: ${commitHash}`)
