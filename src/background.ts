@@ -16,6 +16,10 @@ ipcMain.handle(IpcTypes.CreateTag, async (event, arg) => IpcHandler.createTag(ar
 
 ipcMain.handle(IpcTypes.GetAllTags, async (event, arg) => IpcHandler.getAllTags())
 
+ipcMain.handle(IpcTypes.GetVersion, async (event, arg) => IpcHandler.getVersion())
+
+
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will

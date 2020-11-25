@@ -11,16 +11,24 @@
 </template>
 
 <script lang="ts">
+import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-const appVersion = window.require('./package.json').version
 
 @Component({
 })
 export default class About extends Vue {
-  public version = appVersion
+  public version = ''
 
   constructor() {
     super();
+  }
+
+  mounted() {
+    this.loadView()
+  }
+
+  async loadView() {
+    this.version = await IpcInvoker.getVersion()
   }
 }
 </script>

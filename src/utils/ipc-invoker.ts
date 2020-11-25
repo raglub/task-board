@@ -11,4 +11,8 @@ export const IpcInvoker: IpcTemplate = class IpcInvoker {
     static async [IpcTypes.GetAllTags] (): Promise<Tag[]> {
         return await ipcRenderer.invoke(IpcTypes.GetAllTags);
     }
+
+    static async [IpcTypes.GetVersion] (): Promise<string> {
+        return await ipcRenderer.invoke(IpcTypes.GetVersion);
+    }
 }
