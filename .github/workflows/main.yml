@@ -51,3 +51,4 @@ jobs:
         path: |
           dist_electron/task-board*.deb
           dist_electron/task-board*.exe
+          if-no-files-found: ignore
