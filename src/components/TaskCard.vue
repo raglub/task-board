@@ -22,6 +22,9 @@ import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import Task from "@/models/task";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import EditTask from './EditTask.vue'
+import { ipcRenderer } from 'electron';
+import { IpcInvoker } from '@/utils/ipc-invoker';
+import { Duration } from '@/models/duration';
 
 @Component({
   components: {
@@ -57,6 +60,8 @@ export default class TaskCard extends Vue {
   public async startTask()
   {
     this.$emit("stopRunningTasks");
+    const duration = new Duration()
+    await IpcInvoker.startDuration(this.task._id)
     this.task.start();
     
     this.interval = setInterval(() => {
