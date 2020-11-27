@@ -1,11 +1,12 @@
 import { Duration } from "@/utils/duration";
 import { plainToClass } from "class-transformer";
+import { Guid16 } from '@/types/guid16';
 
 export default class Task
 {
 	name : string;
 	description : string | undefined;
-	_id : string | undefined;
+	_id : Guid16 | undefined;
 	parentId : string | undefined;
 
 	durations : Duration[];
