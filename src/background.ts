@@ -18,7 +18,7 @@ ipcMain.handle(IpcTypes.GetAllTags, async (event, arg) => IpcHandler.getAllTags(
 
 ipcMain.handle(IpcTypes.GetVersion, async (event, arg) => IpcHandler.getVersion())
 
-
+ipcMain.handle(IpcTypes.StartDuration, async (event, arg) => IpcHandler.startDuration(arg))
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
