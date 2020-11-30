@@ -1,5 +1,6 @@
 import { TasksStore } from './tasksStore';
 import Task from '@/models/task';
+import { Guid16 } from '@/types/guid16';
 const { remote } = window.require('electron')
 
 export class RemoteTasksStore
@@ -9,6 +10,13 @@ export class RemoteTasksStore
     constructor()
     {
         this.tasksStore = remote.getGlobal('tasksStore');
+    }
+
+    async findOne(id: Guid16): Promise<Task>
+    {
+        const task: Task = await this.tasksStore.findAsync(id)
+        // result.push(Task.cast(tasks[i]));
+        return task;
     }
 
     async findAll(): Promise<Task[]>

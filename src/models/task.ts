@@ -6,7 +6,7 @@ export default class Task
 {
 	name : string;
 	description : string | undefined;
-	_id : Guid16 | undefined;
+	_id : Guid16;
 	parentId : string | undefined;
 
 	durations : Duration[];
@@ -19,13 +19,13 @@ export default class Task
 
 	constructor( name="none" )
 	{
-		this.name = name;
-		this.description = undefined;
-		this._id = undefined;
-		this.parentId = undefined;
-		this.durations = [];
-		this.isClosed = false;
-		this.isRunning = false; 
+		this.name = name
+		this._id = ''
+		this.description = undefined
+		this.parentId = undefined
+		this.durations = []
+		this.isClosed = false
+		this.isRunning = false 
 	}
 	
 	static cast(rawTask: Task): Task {
