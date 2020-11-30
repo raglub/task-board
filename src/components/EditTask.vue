@@ -1,5 +1,5 @@
 <template>
-  <b-modal size="lg" :id="'modal-edit-task-' + task._id"
+  <b-modal size="lg" :id="'modal-edit-task'" v-model="modalShow"
     title="Edit Task"
     @show="showModal"
     @hidden="resetModal"
@@ -74,6 +74,7 @@ import TagList from '@/components/TagList.vue'
 import Tag from '@/models/tag';
 import { Guid16 } from '@/types/guid16'
 import { IpcInvoker } from '@/utils/ipc-invoker';
+import TaskEditModal from '@/utils/task-edit-modal'
 
 @Component({
   components: {
@@ -93,9 +94,18 @@ export default class EditTask extends Vue {
   public tasksStore: RemoteTasksStore;
 
   @Prop()
-  private task!: Task;
+  private modal!: TaskEditModal;
+
+  private task: Task | undefined;
 
   public selectedTagIds: Guid16[] = []
+
+  get modalShow() {
+    if (this.modal) {
+      return this.modal.isHidden
+    }
+    return false
+  }
 
   constructor() {
     super();
@@ -107,34 +117,37 @@ export default class EditTask extends Vue {
   }
 
   async loadView() {
-    
+    if (this.modal.taskId) {
+      this.task = await this.tasksStore.findOne(this.modal.taskId)
+      this.selectedTagIds.length = 0
+      this.selectedTagIds.push(...this.task.tagIds)
+      this.description = this.task.description;
+      this.durations = [] //[...this.task.durations];
+      this.isClosed = this.task.isClosed;
+      this.name = this.task.name;
+    }
   }
 
   public handleOk(bvModalEvt: any) {
-    this.task.name = this.name;
-    this.task.description = this.description;
-    this.task.durations = this.durations;
-    this.task.isClosed = this.isClosed;
-    console.log(this.isClosed)
-    this.task.tagIds.length = 0
-    this.task.tagIds.push(...this.selectedTagIds)
-    this.tasksStore.update(this.task);
+    //this.task.name = this.name
+    //this.task.description = this.description;
+    //this.task.durations = this.durations;
+    //this.task.isClosed = this.isClosed;
+    //this.task.tagIds.length = 0
+    //this.task.tagIds.push(...this.selectedTagIds)
+    //this.tasksStore.update(this.task);
   }
 
   public resetModal() {
-    this.description = this.task.description;
-    this.durations = [...this.task.durations];
-    this.isClosed = this.task.isClosed;
-    this.name = this.task.name;
+    //this.description = this.task.description;
+    //this.durations = [...this.task.durations];
+    //this.isClosed = this.task.isClosed;
+    //this.name = this.task.name;
   }
 
-  async showModal() {
-    this.selectedTagIds.length = 0
-    this.selectedTagIds.push(...this.task.tagIds)
-    this.description = this.task.description;
-    this.durations = [...this.task.durations];
-    this.isClosed = this.task.isClosed;
-    this.name = this.task.name;
+  async showModal() 
+  {
+    await this.loadView()
   }
 
   public deleteDurationAt(index: number)

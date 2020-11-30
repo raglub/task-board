@@ -6,14 +6,13 @@
     <span v-else>{{ task.name }}</span>
     <b-badge class="ml-2">{{ duration }}</b-badge></span>
     
-    <b-button class="float-right ml-1" variant="warning" size="sm" @click="$bvModal.show('modal-edit-task-' + task._id)">Edit</b-button>
+    <b-button class="float-right ml-1" variant="warning" size="sm" @click="editTask">Edit</b-button>
     <b-button v-if="task.isRunning" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
     <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
   </b-card-header>
   <b-card-body>
     {{ task.description }}
   </b-card-body>
-  <EditTask :task="task" />
 </b-card>
 </template>
 
@@ -21,14 +20,12 @@
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import Task from "@/models/task";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
-import EditTask from './EditTask.vue'
 import { ipcRenderer } from 'electron';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Duration } from '@/models/duration';
 
 @Component({
   components: {
-    EditTask,
   }
 })
 export default class TaskCard extends Vue {
@@ -76,6 +73,10 @@ export default class TaskCard extends Vue {
     clearInterval(this.interval);
     this.task.isRunning = false;
     await this.tasksStore.update(this.task);
+  }
+
+  public async editTask() {
+    this.$emit('editTask', this.task._id)
   }
 }
 </script>
