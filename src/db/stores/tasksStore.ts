@@ -53,10 +53,9 @@ export class TasksStore
 		return result;
     }
     
-	async findAsync( id : string) : Promise<Task>
+	public async findAsync( id : string) : Promise<Task>
 	{
-		var tasks = ( await this.query( this.db, { _id: id } ) );
-		var rawTask = tasks[0];
+		const rawTask = await this.db.find({ _id: id });
 		let task = Task.plainToClass(rawTask);
 		return task;
 	}

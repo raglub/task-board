@@ -25,10 +25,11 @@
       </b-form-checkbox>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
         <b-col>
-          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" />
+          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" @editTask="editTask" />
         </b-col>
       </b-row>
       <new-task @addTask="addTask"/>
+      <edit-task :modal="taskEditModalData" />
       <new-tag/>
     </b-container>
 </template>
@@ -41,18 +42,21 @@ import NewTask from '@/components/NewTask.vue'
 import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import TagList from '@/components/TagList.vue'
+import EditTask from '@/components/EditTask.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { Actions } from '@/store/actions';
 import Tag from '@/models/tag';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Guid16 } from '@/types/guid16';
 import TestStepFilter from '@/utils/test-steps-filter'
+import { gunzip } from 'zlib';
 
 @Component({
   components: {
     NewTask,
     TaskCard,
     NewTag,
+    EditTask,
     TagList
   }
 })
@@ -62,6 +66,11 @@ export default class Board extends Vue {
   public searchText: string = "";
   public tasks: Task[] = [];
   public isLoading: boolean = false;
+
+  public taskEditModalData = {
+    taskId: '',
+    isHidden: true
+  }
 
   public filter: TestStepFilter
 
@@ -96,6 +105,11 @@ export default class Board extends Vue {
   public async addTask(task: Task)
   {
     this.tasks.push(task);
+  }
+
+  public async editTask(taskId: Guid16)
+  {
+    this.taskEditModalData.isHidden = false
   }
 
   public beforeunload(event: any) {
