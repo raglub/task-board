@@ -5,8 +5,7 @@
     <span v-if="task.isClosed" class="text-danger"><del>{{ task.name }}</del></span>
     <span v-else>{{ task.name }}</span>
     <b-badge class="ml-2">{{ duration }}</b-badge></span>
-    
-    <b-button class="float-right ml-1" variant="warning" size="sm" @click="editTask">Edit</b-button>
+    <div class="float-right ml-1"><slot name="buttons"></slot></div>
     <b-button v-if="task.isRunning" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
     <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
   </b-card-header>
@@ -73,10 +72,6 @@ export default class TaskCard extends Vue {
     clearInterval(this.interval);
     this.task.isRunning = false;
     await this.tasksStore.update(this.task);
-  }
-
-  public async editTask() {
-    this.$emit('editTask', this.task._id)
   }
 }
 </script>

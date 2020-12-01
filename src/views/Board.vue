@@ -25,7 +25,11 @@
       </b-form-checkbox>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
         <b-col>
-          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks" @editTask="editTask" />
+          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks">
+            <template v-slot:buttons>
+              <b-button variant="warning" size="sm" @click="editTask(task._id)">Edit</b-button>
+            </template>
+          </TaskCard>
         </b-col>
       </b-row>
       <new-task @addTask="addTask"/>
@@ -50,6 +54,7 @@ import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Guid16 } from '@/types/guid16';
 import TestStepFilter from '@/utils/test-steps-filter'
 import { gunzip } from 'zlib';
+import TaskEditModal from '@/utils/task-edit-modal';
 
 @Component({
   components: {
@@ -67,10 +72,7 @@ export default class Board extends Vue {
   public tasks: Task[] = [];
   public isLoading: boolean = false;
 
-  public taskEditModalData = {
-    taskId: '',
-    isHidden: true
-  }
+  public taskEditModalData = new TaskEditModal()
 
   public filter: TestStepFilter
 
@@ -109,7 +111,8 @@ export default class Board extends Vue {
 
   public async editTask(taskId: Guid16)
   {
-    this.taskEditModalData.isHidden = false
+    this.taskEditModalData.isVisible = true
+    this.taskEditModalData.taskId = taskId
   }
 
   public beforeunload(event: any) {
