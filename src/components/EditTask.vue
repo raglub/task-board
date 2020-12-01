@@ -100,11 +100,17 @@ export default class EditTask extends Vue {
 
   public selectedTagIds: Guid16[] = []
 
-  get modalShow() {
-    if (this.modal) {
-      return this.modal.isHidden
+  get modalShow () {
+    if (!!this.modal) {
+      return this.modal.isVisible
     }
     return false
+  }
+
+  set modalShow(value: boolean) {
+    if (this.modal) {
+      this.modal.isVisible = value
+    }
   }
 
   constructor() {
