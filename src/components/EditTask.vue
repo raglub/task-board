@@ -124,9 +124,10 @@ export default class EditTask extends Vue {
 
   async loadView() {
     if (this.modal.taskId) {
-      this.task = await this.tasksStore.findOne(this.modal.taskId)
+      const task = await this.tasksStore.findOne(this.modal.taskId)
       this.selectedTagIds.length = 0
-      this.selectedTagIds.push(...this.task.tagIds)
+      this.selectedTagIds.push(...task.tagIds)
+      this.task = task
       this.description = this.task.description;
       this.durations = [] //[...this.task.durations];
       this.isClosed = this.task.isClosed;
@@ -135,13 +136,15 @@ export default class EditTask extends Vue {
   }
 
   public handleOk(bvModalEvt: any) {
-    //this.task.name = this.name
-    //this.task.description = this.description;
-    //this.task.durations = this.durations;
-    //this.task.isClosed = this.isClosed;
-    //this.task.tagIds.length = 0
-    //this.task.tagIds.push(...this.selectedTagIds)
-    //this.tasksStore.update(this.task);
+    if (this.task) {
+      this.task.name = this.name
+      this.task.description = this.description;
+      // this.task.durations = this.durations;
+      this.task.isClosed = this.isClosed;
+      this.task.tagIds.length = 0
+      this.task.tagIds.push(...this.selectedTagIds)
+      this.tasksStore.update(this.task);
+    }
   }
 
   public resetModal() {
