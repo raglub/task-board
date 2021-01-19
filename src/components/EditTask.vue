@@ -141,8 +141,7 @@ export default class EditTask extends Vue {
       this.task.description = this.description;
       // this.task.durations = this.durations;
       this.task.isClosed = this.isClosed;
-      this.task.tagIds.length = 0
-      this.task.tagIds.push(...this.selectedTagIds)
+      this.task.tagIds = this.selectedTagIds
       this.tasksStore.update(this.task);
     }
   }
