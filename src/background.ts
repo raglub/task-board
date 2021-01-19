@@ -6,6 +6,7 @@ import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
+import TypedIpcMain from '@/utils/typed-ipc-main'
 
 global.tasksStore = new TasksStore()
 
@@ -80,7 +81,7 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  
+  await TypedIpcMain.register()
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     

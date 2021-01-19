@@ -22,6 +22,7 @@ import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { ipcRenderer } from 'electron';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Duration } from '@/models/duration';
+import TypedIpcRenderer from '@/utils/typed-ipc-renderer'
 
 @Component({
   components: {
@@ -63,12 +64,12 @@ export default class TaskCard extends Vue {
     this.interval = setInterval(() => {
         this.duration = this.task.totalDuration();
     }, 1000);
-    await this.tasksStore.update(this.task);
+    await this.tasksStore.update(this.task);  
   }
 
   public async stopTask()
   {
-    this.task.stop();
+    const result = await TypedIpcRenderer.invoke('stopTask', this.task._id)
     clearInterval(this.interval);
     this.task.isRunning = false;
     await this.tasksStore.update(this.task);
