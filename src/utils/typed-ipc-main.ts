@@ -1,8 +1,11 @@
 import DurationsStore from "@/db/stores/durationsStore";
+import { TasksStore } from "@/db/stores/tasksStore";
 import { Duration } from "@/models/duration";
+import Task from "@/models/task";
 import { Guid16 } from "@/types/guid16";
 import { ipcMain } from "electron";
 import { IpcCommands } from "./ipc-commands";
+import { IpcTypes } from "./ipc-types";
 
 class IpcApi implements IpcCommands {
 	async stopTask (taskId: Guid16) {
@@ -24,6 +27,12 @@ class IpcApi implements IpcCommands {
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
+  }
+  
+  async [IpcTypes.CreateTask] (task: Task) {
+    const tasksStore = new TasksStore()
+    task = await tasksStore.insert(task);
+    return task;
 	}
 }
 
@@ -31,7 +40,7 @@ export default class TypedIpcMain {
 	static async register () {
     try {
       const api = new IpcApi()
-      const apiKeys = ['startTask', 'stopTask']
+      const apiKeys = ['startTask', 'stopTask', IpcTypes.CreateTask]
       for (let i = 0; i < apiKeys.length; i++) {
         const apiKey = apiKeys[i]
         // for (let apiKey in api) {

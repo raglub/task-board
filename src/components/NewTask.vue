@@ -32,6 +32,9 @@ import TagList from '@/components/TagList.vue'
 import Task from "@/models/task";
 import { Guid16 } from '@/types/guid16';
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore';
+import { IpcInvoker } from '@/utils/ipc-invoker';
+import TypedIpcRenderer from '@/utils/typed-ipc-renderer'
+import { IpcTypes } from '@/utils/ipc-types';
 
 @Component({
   components: {
@@ -51,8 +54,8 @@ export default class NewTask extends Vue {
     let task = new Task();
     task.name = this.name;
     task.tagIds = this.selectedTagIds
-    const tasksStore = new RemoteTasksStore()
-    task = await tasksStore.insert(task);
+    const newTask = await TypedIpcRenderer.invoke(IpcTypes.CreateTask, task)
+    task._id = newTask._id
     this.$emit('addTask', task);
   }
 
