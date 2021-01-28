@@ -23,6 +23,7 @@ import { ipcRenderer } from 'electron';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Duration } from '@/models/duration';
 import TypedIpcRenderer from '@/utils/typed-ipc-renderer'
+import { IpcChannel } from '@/utils/ipc-channel';
 
 @Component({
   components: {
@@ -57,22 +58,20 @@ export default class TaskCard extends Vue {
   public async startTask()
   {
     this.$emit("stopRunningTasks");
-    const duration = new Duration()
-    await IpcInvoker.startDuration(this.task._id)
-    this.task.start();
-    
-    this.interval = setInterval(() => {
-        this.duration = this.task.totalDuration();
+    await TypedIpcRenderer.invoke(IpcChannel.StartTask, this.task._id)
+    this.task.isRunning = true
+    this.interval = setInterval(async () => {
+        this.duration = await TypedIpcRenderer.invoke(IpcChannel.TotalDurationForTask, this.task._id)
     }, 1000);
-    await this.tasksStore.update(this.task);  
+    // await this.tasksStore.update(this.task);  
   }
 
   public async stopTask()
   {
-    const result = await TypedIpcRenderer.invoke('stopTask', this.task._id)
+    const result = await TypedIpcRenderer.invoke(IpcChannel.StopTask, this.task._id)
     clearInterval(this.interval);
     this.task.isRunning = false;
-    await this.tasksStore.update(this.task);
+    // await this.tasksStore.update(this.task);
   }
 }
 </script>

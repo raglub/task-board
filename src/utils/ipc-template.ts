@@ -8,5 +8,4 @@ export interface IpcTemplate {
     [IpcTypes.GetAllTags] (): Promise<Tag[]>;
     [IpcTypes.GetVersion] (): Promise<string>;
     [IpcTypes.CreateDuration] (duration: Duration): Promise<Duration>;
-    [IpcTypes.StartDuration] (taskId: Guid16): Promise<Duration>;
 }

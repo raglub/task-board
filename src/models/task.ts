@@ -1,6 +1,7 @@
 import { Duration } from "@/utils/duration";
 import { plainToClass } from "class-transformer";
 import { Guid16 } from '@/types/guid16';
+import { DateTimeConverter } from "@/utils/dateTimeConverter";
 
 export default class Task
 {
@@ -44,18 +45,6 @@ export default class Task
 		return result;
 	}
 
-	start() : void
-	{
-		var duration = new Duration();
-		duration.from = Date.now();
-		if( this.durations == undefined )
-		{
-			this.durations = [];
-		}
-		this.durations.push( duration );
-		this.isRunning = true;
-	}
-
 	stop() : void
 	{
 		if(this.isRunning == true)
@@ -87,20 +76,6 @@ export default class Task
 				value += duration.to - duration.from;
 			}
 		} );
-		return this.toHHMMSS( value/1000 );
-	}
-
-	toHHMMSS( secs : number ) : string
-	{
-		secs = Math.floor(secs);
-		var sec_num = secs;
-		var hours   = Math.floor( sec_num / 3600 );
-		var minutes = Math.floor( sec_num / 60 ) % 60;
-		var seconds = sec_num % 60;
-    
-		return [ hours,minutes,seconds ]
-			.map( v => v < 10 ? "0" + v : v )
-			.filter( ( v,i ) => v !== "00" || i > 0 )
-			.join( ":" );
+		return DateTimeConverter.toHHMMSS( value/1000 );
 	}
 }

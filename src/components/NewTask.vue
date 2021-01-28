@@ -35,6 +35,7 @@ import { RemoteTasksStore } from '@/db/stores/remoteTasksStore';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import TypedIpcRenderer from '@/utils/typed-ipc-renderer'
 import { IpcTypes } from '@/utils/ipc-types';
+import { IpcChannel } from '@/utils/ipc-channel';
 
 @Component({
   components: {
@@ -54,7 +55,7 @@ export default class NewTask extends Vue {
     let task = new Task();
     task.name = this.name;
     task.tagIds = this.selectedTagIds
-    const newTask = await TypedIpcRenderer.invoke(IpcTypes.CreateTask, task)
+    const newTask = await TypedIpcRenderer.invoke(IpcChannel.CreateTask, task)
     task._id = newTask._id
     this.$emit('addTask', task);
   }
