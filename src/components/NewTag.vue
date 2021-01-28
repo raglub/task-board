@@ -34,6 +34,8 @@ import Tag from '@/models/tag';
 import { Actions } from '@/store/actions';
 import { IpcInvoker } from '@/utils/ipc-invoker'
 import CreateTagDto from '@/dtos/create-tag-dto'
+import typedIpcRenderer from '@/utils/typed-ipc-renderer';
+import { IpcChannel } from '@/utils/ipc-channel';
 
 @Component
 export default class NewTask extends Vue {
@@ -46,7 +48,7 @@ export default class NewTask extends Vue {
   public async handleOk(bvModalEvt: any) {
     const tag = new CreateTagDto()
     tag.name = this.name
-    const newTag = await IpcInvoker.createTag(tag.name)
+    const newTag = await typedIpcRenderer.invoke(IpcChannel.CreateTag, tag.name)
   }
 
   public resetModal() {
