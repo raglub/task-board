@@ -30,13 +30,6 @@ export const IpcHandler: IpcTemplate = class IpcHandler {
     return await this.durationsStore.insert(duration)
   }
 
-  static async [IpcTypes.StartDuration] (taskId: Guid16): Promise<Duration> {
-    const duration = new Duration()
-    duration.taskId = taskId
-    duration.from = Date.now()
-    return await this.durationsStore.insert(duration)
-  }
-
   static async [IpcTypes.GetVersion] (): Promise<string> {
     return appVersion
   }

@@ -21,8 +21,4 @@ export const IpcInvoker: IpcTemplate = class IpcInvoker {
     static async [IpcTypes.CreateDuration] (duration: Duration): Promise<Duration> {
         return await ipcRenderer.invoke(IpcTypes.CreateDuration, duration)
     }
-
-    static async [IpcTypes.StartDuration] (taskId: Guid16): Promise<Duration> {
-        return await ipcRenderer.invoke(IpcTypes.StartDuration, taskId)
-    }
 }
