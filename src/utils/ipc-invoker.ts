@@ -6,19 +6,11 @@ import { Guid16 } from '@/types/guid16';
 const { ipcRenderer } = window.require('electron')
 
 export const IpcInvoker: IpcTemplate = class IpcInvoker {
-    static async [IpcTypes.CreateTag] (name: string): Promise<Tag> {
-        return await ipcRenderer.invoke(IpcTypes.CreateTag, name);
-    }
-
     static async [IpcTypes.GetAllTags] (): Promise<Tag[]> {
         return await ipcRenderer.invoke(IpcTypes.GetAllTags);
     }
 
     static async [IpcTypes.GetVersion] (): Promise<string> {
         return await ipcRenderer.invoke(IpcTypes.GetVersion)
-    }
-
-    static async [IpcTypes.CreateDuration] (duration: Duration): Promise<Duration> {
-        return await ipcRenderer.invoke(IpcTypes.CreateDuration, duration)
     }
 }
