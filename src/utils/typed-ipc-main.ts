@@ -4,6 +4,8 @@ import { Duration } from "@/models/duration";
 import Task from "@/models/task";
 import { Guid16 } from "@/types/guid16";
 import { ipcMain } from "electron";
+import { DateTimeConverter } from "./dateTimeConverter";
+import { IpcChannel } from "./ipc-channel";
 import { IpcCommands } from "./ipc-commands";
 import { IpcTypes } from "./ipc-types";
 
@@ -21,15 +23,36 @@ class IpcApi implements IpcCommands {
     return null
 	}
   
-  async startTask (taskId: Guid16) {
+  async [IpcChannel.StartTask] (taskId: Guid16) {
     const durationsStore = new DurationsStore()
 		const duration = new Duration()
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
   }
+
+  async [IpcChannel.TotalDurationForTask] (taskId: Guid16) {
+    const store = new DurationsStore()
+    var durations = await store.findAllForTaskId(taskId)
+		
+    var value = 0;
+		durations.forEach( function( duration : Duration)
+		{
+			if( duration.to == null )
+			{
+				value += Date.now() - duration.from;
+			}
+			else
+			{
+				value += duration.to - duration.from;
+			}
+		} );
+		return DateTimeConverter.toHHMMSS( value/1000 );
+  }
+
+
   
-  async [IpcTypes.CreateTask] (task: Task) {
+  async [IpcChannel.CreateTask] (task: Task) {
     const tasksStore = new TasksStore()
     task = await tasksStore.insert(task);
     return task;
@@ -40,7 +63,7 @@ export default class TypedIpcMain {
 	static async register () {
     try {
       const api = new IpcApi()
-      const apiKeys = ['startTask', 'stopTask', IpcTypes.CreateTask]
+      const apiKeys = [IpcChannel.StartTask, 'stopTask', IpcChannel.CreateTask, IpcChannel.TotalDurationForTask]
       for (let i = 0; i < apiKeys.length; i++) {
         const apiKey = apiKeys[i]
         // for (let apiKey in api) {

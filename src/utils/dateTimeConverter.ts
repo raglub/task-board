@@ -60,4 +60,18 @@ export class DateTimeConverter
 		var date = new Date( dateTime );
 		return date.getTime();
 	}
+
+	static toHHMMSS( secs : number ) : string
+	{
+		secs = Math.floor(secs);
+		var sec_num = secs;
+		var hours   = Math.floor( sec_num / 3600 );
+		var minutes = Math.floor( sec_num / 60 ) % 60;
+		var seconds = sec_num % 60;
+    
+		return [ hours,minutes,seconds ]
+			.map( v => v < 10 ? "0" + v : v )
+			.filter( ( v,i ) => v !== "00" || i > 0 )
+			.join( ":" );
+	}
 }
