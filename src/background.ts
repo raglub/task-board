@@ -13,8 +13,6 @@ global.tasksStore = new TasksStore()
 import { ipcMain } from 'electron';
 import { IpcHandler } from './utils/ipc-handler'
 
-ipcMain.handle(IpcTypes.CreateTag, async (event, arg) => IpcHandler.createTag(arg))
-
 ipcMain.handle(IpcTypes.GetAllTags, async (event, arg) => IpcHandler.getAllTags())
 
 ipcMain.handle(IpcTypes.GetVersion, async (event, arg) => IpcHandler.getVersion())

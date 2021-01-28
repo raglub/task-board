@@ -8,24 +8,26 @@ var path = require('path');
 
 export class TagsStore
 {
-	db: any
+	static db: any
 
 	constructor()
 	{
-		let dbPath = RootDir.combine('db/tags.db')
-		if(process.env.NODE_ENV === 'test')
-		{
-			dbPath = RootDir.combine('db/tasks.test.db')
+		if (!TagsStore.db) {
+			let dbPath = RootDir.combine('db/tags.db')
+			if(process.env.NODE_ENV === 'test')
+			{
+				dbPath = RootDir.combine('db/tasks.test.db')
+			}
+			TagsStore.db = new Datastore({
+				filename: dbPath,
+				autoload: true 
+			});
 		}
-		this.db = new Datastore({
-			filename: dbPath,
-			autoload: true 
-		});
 	}
 
 	async findAllAsync() : Promise<Tag[]>
 	{
-		let result: Tag[] = await this.db.find({});
+		let result: Tag[] = await TagsStore.db.find({});
 		result.sort((a, b) => a.name.localeCompare(b.name))
 		return result;
     }
@@ -36,7 +38,7 @@ export class TagsStore
 		newTag._id = undefined as any
 		newTag.description = tag.description
 		newTag.name = tag.name
-		newTag = await this.db.insert( newTag );
+		newTag = await TagsStore.db.insert( newTag );
 		return newTag;
     }
 }

@@ -1,13 +1,15 @@
 import DurationsStore from "@/db/stores/durationsStore";
+import { TagsStore } from "@/db/stores/tagsStore";
 import { TasksStore } from "@/db/stores/tasksStore";
+import CreateTagDto from "@/dtos/create-tag-dto";
 import { Duration } from "@/models/duration";
+import Tag from "@/models/tag";
 import Task from "@/models/task";
 import { Guid16 } from "@/types/guid16";
 import { ipcMain } from "electron";
 import { DateTimeConverter } from "./dateTimeConverter";
 import { IpcChannel } from "./ipc-channel";
 import { IpcCommands } from "./ipc-commands";
-import { IpcTypes } from "./ipc-types";
 
 class IpcApi implements IpcCommands {
 	async stopTask (taskId: Guid16) {
@@ -50,7 +52,14 @@ class IpcApi implements IpcCommands {
 		return DateTimeConverter.toHHMMSS( value/1000 );
   }
 
-
+  async [IpcChannel.CreateTag] (name: string): Promise<Tag> {
+    const tagsStore = new TagsStore()
+    const tag = new CreateTagDto()
+    tag.description = ''
+    tag.name = name
+    const newTag = await tagsStore.insert(tag)
+    return newTag
+  }
   
   async [IpcChannel.CreateTask] (task: Task) {
     const tasksStore = new TasksStore()
@@ -63,12 +72,11 @@ export default class TypedIpcMain {
 	static async register () {
     try {
       const api = new IpcApi()
-      const apiKeys = [IpcChannel.StartTask, 'stopTask', IpcChannel.CreateTask, IpcChannel.TotalDurationForTask]
-      for (let i = 0; i < apiKeys.length; i++) {
-        const apiKey = apiKeys[i]
-        // for (let apiKey in api) {
-        const method = (api as any)[apiKey] 
-        ipcMain.handle(apiKey, (event: any, ...args: any): any => {
+      const channels = Object.values(IpcChannel)
+      for (let i = 0; i < channels.length; i++) {
+        const channel = channels[i]
+        const method = (api as any)[channel] 
+        ipcMain.handle(channel, (event: any, ...args: any): any => {
           return method(...args)
         })
       }
