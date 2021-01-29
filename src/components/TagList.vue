@@ -9,8 +9,9 @@
 <script lang="ts">
 import { Component, Prop, Vue, Model, Watch } from 'vue-property-decorator';
 import Tag from '@/models/tag';
-import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Guid16 } from '@/types/guid16';
+import { IpcChannel } from '@/utils/ipc-channel';
+import { IpcInvoker } from '@/utils/ipc-invoker';
 
 @Component({
   components: {
@@ -48,7 +49,7 @@ export default class TagList extends Vue {
   }
 
   async loadView() {
-    this.tags = await IpcInvoker.getAllTags()
+    this.tags = await IpcInvoker.invoke(IpcChannel.GetAllTags)
   }
 
   updateTags(ctx: any) {

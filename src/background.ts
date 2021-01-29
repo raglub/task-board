@@ -1,7 +1,6 @@
 'use strict'
 import { TasksStore } from './db/stores/tasksStore'
 import { app, protocol, BrowserWindow } from 'electron'
-import { IpcTypes } from '@/utils/ipc-types'
 import {
   createProtocol,
   /* installVueDevtools */
@@ -9,13 +8,6 @@ import {
 import TypedIpcMain from '@/utils/typed-ipc-main'
 
 global.tasksStore = new TasksStore()
-
-import { ipcMain } from 'electron';
-import { IpcHandler } from './utils/ipc-handler'
-
-ipcMain.handle(IpcTypes.GetAllTags, async (event, arg) => IpcHandler.getAllTags())
-
-ipcMain.handle(IpcTypes.GetVersion, async (event, arg) => IpcHandler.getVersion())
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

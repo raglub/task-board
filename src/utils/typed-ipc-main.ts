@@ -10,6 +10,7 @@ import { ipcMain } from "electron";
 import { DateTimeConverter } from "./dateTimeConverter";
 import { IpcChannel } from "./ipc-channel";
 import { IpcCommands } from "./ipc-commands";
+const appVersion = require('../../package.json').version
 
 class IpcApi implements IpcCommands {
 	async stopTask (taskId: Guid16) {
@@ -31,6 +32,14 @@ class IpcApi implements IpcCommands {
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
+  }
+
+  async [IpcChannel.GetAllTags] (): Promise<Tag[]> {
+    return await new TagsStore().findAllAsync()
+  }
+
+  async [IpcChannel.GetVersion] (): Promise<string> {
+    return appVersion
   }
 
   async [IpcChannel.TotalDurationForTask] (taskId: Guid16) {

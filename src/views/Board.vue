@@ -50,7 +50,6 @@ import EditTask from '@/components/EditTask.vue'
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { Actions } from '@/store/actions';
 import Tag from '@/models/tag';
-import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Guid16 } from '@/types/guid16';
 import TestStepFilter from '@/utils/test-steps-filter'
 import { gunzip } from 'zlib';
