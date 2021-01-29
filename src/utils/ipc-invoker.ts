@@ -1,16 +1,9 @@
-import { IpcTypes } from './ipc-types';
-import Tag from '@/models/tag';
-import { IpcTemplate } from './ipc-template';
-import { Duration } from '@/models/duration';
-import { Guid16 } from '@/types/guid16';
+// import { ipcRenderer } from "electron";
 const { ipcRenderer } = window.require('electron')
+// let { TypedIpcRenderer } = window.require('electron-typed-ipc')
+import { TypedIpcRenderer } from "electron-typed-ipc";
 
-export const IpcInvoker: IpcTemplate = class IpcInvoker {
-    static async [IpcTypes.GetAllTags] (): Promise<Tag[]> {
-        return await ipcRenderer.invoke(IpcTypes.GetAllTags);
-    }
+import { Events, IpcCommands } from "./ipc-commands";
 
-    static async [IpcTypes.GetVersion] (): Promise<string> {
-        return await ipcRenderer.invoke(IpcTypes.GetVersion)
-    }
-}
+const IpcInvoker = ipcRenderer as TypedIpcRenderer<Events, IpcCommands>
+export { IpcInvoker };

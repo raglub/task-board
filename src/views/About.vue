@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { IpcChannel } from '@/utils/ipc-channel';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
@@ -28,7 +29,7 @@ export default class About extends Vue {
   }
 
   async loadView() {
-    this.version = await IpcInvoker.getVersion()
+    this.version = await IpcInvoker.invoke(IpcChannel.GetVersion)
   }
 }
 </script>
