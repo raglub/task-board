@@ -19,11 +19,8 @@
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import Task from "@/models/task";
 import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
-import { ipcRenderer } from 'electron';
-import { IpcInvoker } from '@/utils/ipc-invoker';
-import { Duration } from '@/models/duration';
-import TypedIpcRenderer from '@/utils/typed-ipc-renderer'
 import { IpcChannel } from '@/utils/ipc-channel';
+import { IpcInvoker } from '@/utils/ipc-invoker';
 
 @Component({
   components: {
@@ -58,17 +55,17 @@ export default class TaskCard extends Vue {
   public async startTask()
   {
     this.$emit("stopRunningTasks");
-    await TypedIpcRenderer.invoke(IpcChannel.StartTask, this.task._id)
+    await IpcInvoker.invoke(IpcChannel.StartTask, this.task._id)
     this.task.isRunning = true
     this.interval = setInterval(async () => {
-        this.duration = await TypedIpcRenderer.invoke(IpcChannel.TotalDurationForTask, this.task._id)
+        this.duration = await IpcInvoker.invoke(IpcChannel.TotalDurationForTask, this.task._id)
     }, 1000);
-    // await this.tasksStore.update(this.task);  
+    // await this.tasksStore.update(this.task);
   }
 
   public async stopTask()
   {
-    const result = await TypedIpcRenderer.invoke(IpcChannel.StopTask, this.task._id)
+    const result = await IpcInvoker.invoke(IpcChannel.StopTask, this.task._id)
     clearInterval(this.interval);
     this.task.isRunning = false;
     // await this.tasksStore.update(this.task);

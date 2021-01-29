@@ -73,7 +73,6 @@ import DateTime from './DateTime.vue'
 import TagList from '@/components/TagList.vue'
 import Tag from '@/models/tag';
 import { Guid16 } from '@/types/guid16'
-import { IpcInvoker } from '@/utils/ipc-invoker';
 import TaskEditModal from '@/utils/task-edit-modal'
 
 @Component({
