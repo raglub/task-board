@@ -6,7 +6,6 @@ import {store} from '@/store/index'
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
-
 if (process.env.NODE_ENV === 'development') {
   // devtools.connect()
 }

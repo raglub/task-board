@@ -10,4 +10,5 @@ export enum IpcChannel {
     StopTask = 'stopTask',
     TotalDurationForTask = 'totalDurationForTask',
     UpdateTask = 'updateTask',
+    MigrateDurationsToDurationsStore = 'migrateDurationsToDurationsStore'
 }
