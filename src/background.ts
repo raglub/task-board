@@ -1,14 +1,11 @@
 'use strict'
-import { TasksStore } from './db/stores/tasksStore'
 import { app, protocol, BrowserWindow } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 import TypedIpcMain from '@/utils/typed-ipc-main'
-
-global.tasksStore = new TasksStore()
-
+const path = require("path");
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -18,7 +15,10 @@ let win: BrowserWindow | null
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
+declare let __static: any;
+
 function createWindow () {
+  const preload = path.resolve(__static, 'preload.js')
   // Create the browser window.
   win = new BrowserWindow({ 
     minWidth: 1024,
@@ -28,8 +28,9 @@ function createWindow () {
     webPreferences: {
     // Use pluginOptions.nodeIntegration, leave this alone
     // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-    nodeIntegration: true,
-    enableRemoteModule: true,
+    nodeIntegration: false,
+    enableRemoteModule: false,
+    preload
   } })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

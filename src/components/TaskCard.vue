@@ -18,7 +18,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import Task from "@/models/task";
-import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { IpcChannel } from '@/utils/ipc-channel';
 import { IpcInvoker } from '@/utils/ipc-invoker';
 
@@ -33,15 +32,16 @@ export default class TaskCard extends Vue {
 
   public name: string = '';
 
-  public tasksStore: RemoteTasksStore
-
   @Prop()
   private task!: Task;
 
   constructor() {
-    super();
-    this.tasksStore = new RemoteTasksStore();
-    this.duration = this.task.totalDuration();
+    super()
+    this.loadView()
+  }
+
+  async loadView() {
+    this.duration = await IpcInvoker.invoke(IpcChannel.TotalDurationForTask, this.task._id)
   }
 
   @Watch('task.isRunning')

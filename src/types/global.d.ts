@@ -1,10 +1,5 @@
-import { TasksStore } from "@/db/stores/tasksStore";
-
 declare global {
-    namespace NodeJS {
-        interface Global {
-            tasksStore: TasksStore
-        }
-    }
-}
+    interface Window { ipcRenderer: any; }
+  }
+  
 export default global;

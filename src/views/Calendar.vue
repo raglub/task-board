@@ -24,9 +24,11 @@ import CalendarEventModal from '@/components/CalendarEventModal.vue'
 import { DateTimeConverter } from '../utils/dateTimeConverter';
 const Moment = require("moment");
 import Task from "@/models/task";
-import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 const VueCal = require('vue-cal');
 import 'vue-cal/dist/vuecal.css'
+import { IpcInvoker } from '@/utils/ipc-invoker';
+import { IpcChannel } from '@/utils/ipc-channel';
+import { Duration } from '@/models/duration';
 
 @Component({
   components: {
@@ -37,15 +39,12 @@ import 'vue-cal/dist/vuecal.css'
 export default class Calendar extends Vue {
   public tasks: Task[] = [];
 
-  private tasksStore: RemoteTasksStore;
-
   public events: CalendarEvent[] = [];
   
   public vueCalEvent: VueCalEvent;
 
   constructor() {
     super();
-    this.tasksStore = new RemoteTasksStore();
     this.vueCalEvent = new VueCalEvent();
   }
 
@@ -54,23 +53,20 @@ export default class Calendar extends Vue {
     this.vueCalEvent = e
     this.$bvModal.show('modal-calendar-event')
   }
+
   async updateEvents(response: VueCalCard )
   {
     var converter = new DateTimeConverter();
     var from = converter.toUnix(response.startDate);
     var to = converter.toUnix(response.endDate);
-    var tasksByDay = await this.tasksStore.findFromTo(response.startDate, response.endDate);
+    var durations = await IpcInvoker.invoke(IpcChannel.FindDurationsFromTo, response.startDate, response.endDate);
     var events : CalendarEvent[] = [];
-    tasksByDay.forEach(function(task : any)
-    {
-        task.durations.forEach(function(duration : any)
-        {   
-            if(from != null && to != null && duration.from >= from && duration.to < to)
-            {
-                var event = new CalendarEvent(task.name, duration.from, duration.to);
-                events.push(event);
-            }
-        });
+    durations.forEach(async (duration: Duration) => {
+      if (!!duration && !!duration.to && !!duration.taskId) {
+        var task = await IpcInvoker.invoke(IpcChannel.FindOneTask, duration.taskId);
+        var event = new CalendarEvent(task.name, duration.from, duration.to);
+        events.push(event);
+      }
     });
     this.events = events;
   }
