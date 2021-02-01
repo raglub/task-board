@@ -102,6 +102,31 @@ class IpcApi implements IpcCommands {
   async [IpcChannel.UpdateTask] (task: Task): Promise<void> {
     await new TasksStore().update(task)
   }
+
+  async [IpcChannel.MigrateDurationsToDurationsStore] (): Promise<void> {
+    console.info("The migration has been begun.")
+    const tasksStore = await new TasksStore()
+    const durationsStore = await new DurationsStore()
+    const tasks = await tasksStore.findAllAsync()
+    for(let i = 0; i < tasks.length; i++) {
+      const task = tasks[i]
+      for(let durationIndex = 0; durationIndex < task.durations.length; durationIndex++) {
+        const duration = task.durations[durationIndex]
+        let newDuration = new Duration()
+        newDuration.taskId = task._id
+        newDuration.from = duration.from
+        newDuration.to = duration.to
+        newDuration = await durationsStore.insert(newDuration)
+        console.info('Inserted:')
+        console.info(newDuration)
+      }
+      if (task.durations.length > 0) {
+        task.durations = []
+        tasksStore.update(task)
+      }
+    }
+    console.info("The migration has been finished.")
+  }
 }
 
 export default class TypedIpcMain {
