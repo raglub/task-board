@@ -4,7 +4,8 @@ import { Mutations } from './mutations'
 import { ActionTypes } from './action-types'
 import Tag from '@/models/tag'
 import Task from '@/models/task'
-import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
+import { IpcInvoker } from '@/utils/ipc-invoker'
+import { IpcChannel } from '@/utils/ipc-channel'
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -35,8 +36,6 @@ export const actions: ActionTree<RootState, RootState> & ActionsBase = {
   },
 
   async [ActionTypes.LoadTasks]({ commit }, filter: any) {
-    const tasksStore = new RemoteTasksStore()
-    const tasks = await tasksStore.findAll()
-    return tasks
+    return await IpcInvoker.invoke(IpcChannel.FindAllTasks)
   }
 }

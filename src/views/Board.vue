@@ -47,12 +47,9 @@ import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import TagList from '@/components/TagList.vue'
 import EditTask from '@/components/EditTask.vue'
-import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import { Actions } from '@/store/actions';
-import Tag from '@/models/tag';
 import { Guid16 } from '@/types/guid16';
 import TestStepFilter from '@/utils/test-steps-filter'
-import { gunzip } from 'zlib';
 import TaskEditModal from '@/utils/task-edit-modal';
 
 @Component({
@@ -79,18 +76,14 @@ export default class Board extends Vue {
 
   public selectedTagIds: Guid16[] = []
 
-  private tasksStore: RemoteTasksStore;
-
   public async loadTasks()
   {
-    const tasksStore = new RemoteTasksStore()
     this.tasks = await Actions.loadTasks(this, undefined)
   }
 
   constructor() {
     super();
     this.filter = new TestStepFilter()
-    this.tasksStore = new RemoteTasksStore()
   }
   
   mounted() {
@@ -149,7 +142,7 @@ export default class Board extends Vue {
   {
     for(var i=0; i < this.tasks.length; i++)
     {
-      this.tasks[i].stop()
+      // this.tasks[i].stop()
     }
   }
 }

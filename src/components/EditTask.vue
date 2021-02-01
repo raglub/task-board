@@ -68,12 +68,12 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Task from "@/models/task";
 import { Duration } from "@/utils/duration";
-import { RemoteTasksStore } from '@/db/stores/remoteTasksStore'
 import DateTime from './DateTime.vue'
 import TagList from '@/components/TagList.vue'
-import Tag from '@/models/tag';
 import { Guid16 } from '@/types/guid16'
 import TaskEditModal from '@/utils/task-edit-modal'
+import { IpcInvoker } from '@/utils/ipc-invoker';
+import { IpcChannel } from '@/utils/ipc-channel';
 
 @Component({
   components: {
@@ -89,8 +89,6 @@ export default class EditTask extends Vue {
   public name: string = '';
 
   public isClosed: boolean = false;
-
-  public tasksStore: RemoteTasksStore;
 
   @Prop()
   private modal!: TaskEditModal;
@@ -114,7 +112,6 @@ export default class EditTask extends Vue {
 
   constructor() {
     super();
-    this.tasksStore = new RemoteTasksStore();
   }
 
   mounted() {
@@ -123,12 +120,12 @@ export default class EditTask extends Vue {
 
   async loadView() {
     if (this.modal.taskId) {
-      const task = await this.tasksStore.findOne(this.modal.taskId)
+      const task = await IpcInvoker.invoke(IpcChannel.FindOneTask, this.modal.taskId)
       this.selectedTagIds.length = 0
       this.selectedTagIds.push(...task.tagIds)
       this.task = task
       this.description = this.task.description;
-      this.durations = [] //[...this.task.durations];
+      this.durations = [...this.task.durations];
       this.isClosed = this.task.isClosed;
       this.name = this.task.name;
     }
@@ -141,7 +138,7 @@ export default class EditTask extends Vue {
       // this.task.durations = this.durations;
       this.task.isClosed = this.isClosed;
       this.task.tagIds = this.selectedTagIds
-      this.tasksStore.update(this.task);
+      IpcInvoker.invoke(IpcChannel.UpdateTask, this.task)
     }
   }
 
