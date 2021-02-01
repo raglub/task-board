@@ -12,8 +12,12 @@ export type IpcCommands = {
   [IpcChannel.StopTask]: (taskId: Guid16) => Promise<Duration | null>
   [IpcChannel.CreateTag]: (name: string) => Promise<Tag>
   [IpcChannel.CreateTask]: (task: Task) => Promise<Task>
+  [IpcChannel.FindDurationsFromTo]: (from: Date, to: Date) => Promise<Duration[]>
+  [IpcChannel.FindOneTask]: (taskId: Guid16) => Promise<Task>
   [IpcChannel.GetAllTags]: () => Promise<Tag[]>
+  [IpcChannel.FindAllTasks]: () => Promise<Task[]>
   [IpcChannel.GetVersion]: () => Promise<string>
   [IpcChannel.StartTask]: (taskId: Guid16) => Promise<Duration>
   [IpcChannel.TotalDurationForTask]: (taksId: Guid16) => Promise<string>
+  [IpcChannel.UpdateTask]: (task: Task) => Promise<void>
 };

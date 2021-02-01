@@ -36,28 +36,15 @@ export class TasksStore
 		} );
 	}
 
-	public async findFromTo(from: Date, to: Date) : Promise<Task[]>
-	{
-		var result : Task[] = [];
-		var converter = new DateTimeConverter();
-		var startDate = converter.toUnix(from);
-		var endDate = converter.toUnix(to);
-		var rawTasks : Task[] = await TasksStore.db.find({
-			"durations.from" : {$gte : startDate},
-			$not: {"durations.to" : {$gt : endDate}}});
-		result = plainToClass(Task, rawTasks);
-		return result;
-	}
-
 	async findAllAsync() : Promise<Task[]>
 	{
 		var result : Task[] = [];
 		const durationStore = new DurationsStore()
-				var rawTasks : Task[] = await TasksStore.db.find({})
-				await rawTasks.forEach(async (task) =>
-					task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
-				)
-        result = plainToClass(Task, rawTasks)
+		var rawTasks : Task[] = await TasksStore.db.find({})
+		await rawTasks.forEach(async (task) =>
+			task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
+		)
+    result = plainToClass(Task, rawTasks)
 		return result;
     }
     
@@ -65,6 +52,8 @@ export class TasksStore
 	{
 		const rawTask = await TasksStore.db.find({ _id: id });
 		let task = Task.plainToClass(rawTask);
+		const durationStore = new DurationsStore()
+		task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
 		return task;
 	}
 
@@ -78,6 +67,10 @@ export class TasksStore
 		if(task._id === undefined)
 			throw "Id for task is undefined";
 		await TasksStore.db.update( { _id: task._id }, task );
+		// const durationStore = new DurationsStore()
+		// await task.durations.forEach(async (duration) =>
+		//	task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
+		// )
 	}
 
 	///**

@@ -25,13 +25,21 @@ class IpcApi implements IpcCommands {
     }
     return null
 	}
-  
+
   async [IpcChannel.StartTask] (taskId: Guid16) {
     const durationsStore = new DurationsStore()
 		const duration = new Duration()
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
+  }
+
+  async [IpcChannel.FindDurationsFromTo] (from: Date, to: Date): Promise<Duration[]> {
+    return await new DurationsStore().findFromTo(from, to);
+  }
+
+  async [IpcChannel.FindOneTask] (taskId: Guid16): Promise<Task> {
+    return await new TasksStore().findAsync(taskId)
   }
 
   async [IpcChannel.GetAllTags] (): Promise<Tag[]> {
@@ -74,7 +82,26 @@ class IpcApi implements IpcCommands {
     const tasksStore = new TasksStore()
     task = await tasksStore.insert(task);
     return task;
-	}
+  }
+
+  async [IpcChannel.FindAllTasks] () {
+    const tasksStore = new TasksStore()
+    const durationStore = new DurationsStore()
+    const result = [];
+    const tasks = await tasksStore.findAllAsync();
+    for(let i = 0; i < tasks.length; i++)
+    {
+      const task = tasks[i]
+      const durations = await durationStore.findAllForTaskId(task._id)
+      task.durations = [] // durations as any[]
+      result.push(Task.cast(tasks[i]));
+    }
+    return result;
+  }
+
+  async [IpcChannel.UpdateTask] (task: Task): Promise<void> {
+    await new TasksStore().update(task)
+  }
 }
 
 export default class TypedIpcMain {
