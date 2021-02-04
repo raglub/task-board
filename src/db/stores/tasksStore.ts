@@ -6,6 +6,7 @@ import { DateTimeConverter } from "../../utils/dateTimeConverter";
 import RootDir from '@/utils/rootDir';
 import DurationsStore from "./durationsStore";
 import { Duration } from "@/utils/duration";
+import TaskEdit from "@/models/task-edit";
 var path = require('path');
 
 export class TasksStore
@@ -62,15 +63,25 @@ export class TasksStore
 	// * @param {string} id
 	// * @param {Task} task 
 	// */
-	public async update(task : Task )
+	public async update(taskEdit : TaskEdit )
 	{
-		if(task._id === undefined)
+		if(taskEdit._id === undefined)
 			throw "Id for task is undefined";
+		const task = await this.findAsync(taskEdit._id);
+		task.description = taskEdit.description
+		task.isClosed = taskEdit.isClosed
+		task.isRunning = taskEdit.isRunning
+		task.name = taskEdit.name
+		task.tagIds = taskEdit.tagIds
+		task.durations.length = 0
 		await TasksStore.db.update( { _id: task._id }, task );
-		// const durationStore = new DurationsStore()
-		// await task.durations.forEach(async (duration) =>
-		//	task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
-		// )
+		const durationStore = new DurationsStore()
+		await taskEdit.durations.forEach(async (duration) => {
+			const oldDuration = await durationStore.find(duration._id)
+			if (oldDuration.from !== duration.from || oldDuration.to !== duration.to) {
+				await durationStore.update(duration);
+			}
+		})
 	}
 
 	///**

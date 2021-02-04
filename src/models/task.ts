@@ -61,21 +61,4 @@ export default class Task
 			}
 		}
 	}
-
-	totalDuration(): string
-	{
-		var value = 0;
-		this.durations.forEach( function( duration : Duration)
-		{
-			if( duration.to == null )
-			{
-				value += Date.now() - duration.from;
-			}
-			else
-			{
-				value += duration.to - duration.from;
-			}
-		} );
-		return DateTimeConverter.toHHMMSS( value/1000 );
-	}
 }

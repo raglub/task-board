@@ -14,7 +14,6 @@
     "electron:build:win": "vue-cli-service electron:build --win nsis --x64",
     "electron:build": "vue-cli-service electron:build --win nsis --linux deb --mac -p always",
     "electron:serve": "vue-cli-service electron:serve",
-    "electron:serve:debug": "DEBUG=true vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
