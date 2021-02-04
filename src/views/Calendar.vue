@@ -11,7 +11,7 @@
          :on-event-click="clickEvent"
          :events="events">
       </vue-cal>
-      <calendar-event-modal :vueCalEvent=vueCalEvent />
+      <calendar-event-modal :vueCalEvent="vueCalEvent" />
     </b-container>
 </template>
 
