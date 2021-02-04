@@ -43,6 +43,12 @@ export default class DurationsStore
 	{
 		return await DurationsStore.db.find({"taskId": taskId});
 	}
+
+	public async find( id: string ) : Promise<Duration>
+	{
+		var durations = await DurationsStore.db.find({ "_id": id });
+		return durations[0]
+	}
 	
 	public async findFromTo(from: Date, to: Date) : Promise<Duration[]>
 	{

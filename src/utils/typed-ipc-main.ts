@@ -5,6 +5,7 @@ import CreateTagDto from "@/dtos/create-tag-dto";
 import { Duration } from "@/models/duration";
 import Tag from "@/models/tag";
 import Task from "@/models/task";
+import TaskEdit from "@/models/task-edit";
 import { Guid16 } from "@/types/guid16";
 import { ipcMain } from "electron";
 import { DateTimeConverter } from "./dateTimeConverter";
@@ -32,6 +33,10 @@ class IpcApi implements IpcCommands {
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
+  }
+
+  async [IpcChannel.FindDurationsForTask] (taskId: Guid16): Promise<Duration[]> {
+    return await new DurationsStore().findAllForTaskId(taskId);
   }
 
   async [IpcChannel.FindDurationsFromTo] (from: Date, to: Date): Promise<Duration[]> {
@@ -92,15 +97,13 @@ class IpcApi implements IpcCommands {
     for(let i = 0; i < tasks.length; i++)
     {
       const task = tasks[i]
-      const durations = await durationStore.findAllForTaskId(task._id)
-      task.durations = [] // durations as any[]
-      result.push(Task.cast(tasks[i]));
+      result.push(Task.cast(task));
     }
     return result;
   }
 
-  async [IpcChannel.UpdateTask] (task: Task): Promise<void> {
-    await new TasksStore().update(task)
+  async [IpcChannel.UpdateTask] (taskEdit: TaskEdit): Promise<void> {
+    await new TasksStore().update(taskEdit)
   }
 
   async [IpcChannel.MigrateDurationsToDurationsStore] (): Promise<void> {
@@ -121,8 +124,16 @@ class IpcApi implements IpcCommands {
         console.info(newDuration)
       }
       if (task.durations.length > 0) {
-        task.durations = []
-        tasksStore.update(task)
+        task.durations.length = 0
+        const taskEdit = new TaskEdit()
+        taskEdit._id = task._id
+        taskEdit.description = task.description
+        taskEdit.durations.length = 0
+        taskEdit.isClosed = task.isClosed
+        taskEdit.isRunning = task.isRunning
+        taskEdit.name = task.name
+        taskEdit.tagIds = task.tagIds
+        await tasksStore.update(taskEdit)
       }
     }
     console.info("The migration has been finished.")
