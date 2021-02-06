@@ -8,9 +8,14 @@
             <b-button size="sm" @click="searchTasks" class="my-2 my-sm-0" type="submit">Search</b-button>
           </b-nav-form>
         </b-col>
-        <b-col>  
-          <b-button variant="warning" class="float-right pl-1" size="sm" v-b-modal.modal-new-task>Add Task</b-button>
-          <b-button variant="warning" class="float-right" size="sm" v-b-modal.modal-new-tag>Add Tag</b-button>
+        <b-col>
+          <b-dropdown right variant="link" title="More options" class="float-right" toggle-class="text-decoration-none" no-caret>
+            <template #button-content>
+              <b-icon icon="three-dots-vertical"></b-icon>
+            </template>
+            <b-dropdown-item v-b-modal.modal-new-task>Add Task</b-dropdown-item>
+            <b-dropdown-item v-b-modal.modal-new-tag>Add Tag</b-dropdown-item>
+          </b-dropdown>
         </b-col>
       </b-row>
       <b-row class="mb-1 mt-2">
