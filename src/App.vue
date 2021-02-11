@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-main">
     <div id="nav">
       <b-navbar toggleable="sm" type="dark" variant="dark">
         <b-navbar-brand href="#">Task Board</b-navbar-brand>
@@ -43,4 +43,8 @@ export default class Board extends Vue {
 <style lang="scss">
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
+#app,
+.modal-content {
+  background-color: #f6f8f9;
+}
 </style>
