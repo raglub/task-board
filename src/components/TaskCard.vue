@@ -1,18 +1,22 @@
 <template>
- <b-card bg-variant="dark" text-variant="white" no-body>
-  <b-card-header>
-    <span class="align-middle">
-    <span v-if="task.isClosed" class="text-danger"><del>{{ task.name }}</del></span>
-    <span v-else>{{ task.name }}</span>
-    <b-badge class="ml-2">{{ duration }}</b-badge></span>
-    <div class="float-right ml-1"><slot name="buttons"></slot></div>
-    <b-button v-if="task.isRunning" class="float-right ml-1" variant="danger" @click="stopTask" size="sm">STOP</b-button>
-    <b-button v-else class="float-right ml-1" size="sm" @click="startTask" variant="success">START</b-button>
-  </b-card-header>
-  <b-card-body>
-    {{ task.description }}
-  </b-card-body>
-</b-card>
+<div class="task-card d-flex">
+  <span class="mt-1" style="font-size: 18px;">
+    <b-icon v-if="task.isClosed" variant="info" icon="check-circle-fill"></b-icon>
+    <b-icon v-else variant="info" icon="check-circle"></b-icon>
+    <span class="ml-2">{{ task.name }}</span>
+  </span>
+  <span class="ml-auto">
+    <b-badge pill style="font-size: 18px;" variant="light">{{ duration }}</b-badge>
+    <b-button v-if="task.isRunning" class="ml-1" variant="secondary" @click="stopTask" size="sm">STOP</b-button>
+    <b-button v-else class="ml-1" size="sm" @click="startTask" variant="info">START</b-button>
+    <b-dropdown right variant="link" title="More options" toggle-class="text-decoration-none" no-caret>
+      <template #button-content>
+        <b-icon icon="three-dots-vertical"></b-icon>
+      </template>
+      <slot name="buttons"></slot>
+    </b-dropdown>
+  </span>
+</div>
 </template>
 
 <script lang="ts">
@@ -74,5 +78,10 @@ export default class TaskCard extends Vue {
 </script>
 
 <style scoped lang="scss">
-
+.task-card {
+  background-color: #fff;
+  padding: 10px 0 10px 10px !important;
+  border-bottom: 1px solid #aaa;
+  border-radius: 0 0 0 10px;
+}
 </style>
