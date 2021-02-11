@@ -32,7 +32,7 @@
         <b-col>
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks">
             <template v-slot:buttons>
-              <b-button variant="warning" size="sm" @click="editTask(task._id)">Edit</b-button>
+              <b-dropdown-item @click="editTask(task._id)">Edit Task</b-dropdown-item>
             </template>
           </TaskCard>
         </b-col>
@@ -154,5 +154,4 @@ export default class Board extends Vue {
 </script>
 
 <style scoped lang="scss">
-
 </style>
