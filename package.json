@@ -1,10 +1,17 @@
 {
   "name": "task-board",
-  "author": "Michał Szyma <michal@szyma.dev>",
-  "version": "0.1.0",
+  "author": "Michał Szyma <szyma.michael@gmail.com>",
   "commitHash": "000000",
   "description": "This is a task management tool",
+  "engines": {
+    "node": "10.x"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raglub/task-board.git"
+  },
+  "version": "0.1.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
