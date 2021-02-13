@@ -30,20 +30,20 @@ jobs:
         node-version: ${{ matrix.node_version }}
     - name: Set env
       run: node version-changer.js
-    - name: npm install, build and test (windows-only) 
+    - name: npm ci, build and test (windows-only) 
       env:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       if: contains(matrix.os, 'window')
       run: |
         echo ${LATEST_TAG_DISTANCE}
-        npm install
+        npm ci
         npm run electron:build:win -- -p always
-    - name: npm install, build and test (linux-only) 
+    - name: npm ci, build and test (linux-only) 
       env:
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       if: contains(matrix.os, 'ubuntu')  
       run: |
-        npm install
+        npm ci
         npm run electron:build:linux -- -p always
     - uses: actions/upload-artifact@v2
       with:

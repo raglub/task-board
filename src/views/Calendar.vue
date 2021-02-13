@@ -21,7 +21,6 @@ import { CalendarEvent } from '../utils/calendarEvent'
 import { VueCalEvent } from '@/utils/vueCalEvent'
 import { VueCalCard } from '@/utils/vueCalCard'
 import CalendarEventModal from '@/components/CalendarEventModal.vue'
-import { DateTimeConverter } from '../utils/dateTimeConverter'
 import Task from '@/models/task'
 import 'vue-cal/dist/vuecal.css'
 import { IpcInvoker } from '@/utils/ipc-invoker'
@@ -53,9 +52,6 @@ export default class Calendar extends Vue {
   }
 
   async updateEvents (response: VueCalCard) {
-    const converter = new DateTimeConverter()
-    const from = converter.toUnix(response.startDate)
-    const to = converter.toUnix(response.endDate)
     const durations = await IpcInvoker.invoke(IpcChannel.FindDurationsFromTo, response.startDate, response.endDate)
     const events: CalendarEvent[] = []
     durations.forEach(async (duration: Duration) => {

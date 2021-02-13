@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import CreateTagDto from '@/dtos/create-tag-dto'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { IpcInvoker } from '@/utils/ipc-invoker'
@@ -36,14 +36,10 @@ import { IpcInvoker } from '@/utils/ipc-invoker'
 export default class NewTask extends Vue {
   public name = '';
 
-  constructor () {
-    super()
-  }
-
-  public async handleOk (bvModalEvt: any) {
+  public async handleOk () {
     const tag = new CreateTagDto()
     tag.name = this.name
-    const newTag = await IpcInvoker.invoke(IpcChannel.CreateTag, tag.name)
+    await IpcInvoker.invoke(IpcChannel.CreateTag, tag.name)
   }
 
   public resetModal () {

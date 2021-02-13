@@ -5,7 +5,7 @@ import {
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 import TypedIpcMain from '@/utils/typed-ipc-main'
-const path = require('path')
+import path from 'path'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -35,7 +35,7 @@ function createWindow () {
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    win.setIcon(__dirname + '/../assets/icons/png/icon.png')
+    win.setIcon(path.join(__dirname, '/../assets/icons/png/icon.png'))
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
     if (!process.env.IS_TEST) win.webContents.openDevTools()

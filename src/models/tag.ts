@@ -1,5 +1,5 @@
 export default class Tag {
-	name = '';
-	description = ''
-	_id = '';
+  name = '';
+  description = ''
+  _id = '';
 }

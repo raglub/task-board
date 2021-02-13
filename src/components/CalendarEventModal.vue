@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import Task from '@/models/task'
 import { VueCalEvent } from '@/utils/vueCalEvent'
 
 @Component
@@ -26,11 +25,8 @@ export default class CalendarEventModal extends Vue {
   @Prop()
   private vueCalEvent!: VueCalEvent | undefined;
 
-  constructor () {
-    super()
-  }
-
-  public clickOk (bvModalEvt: any) {
+  public clickOk () {
+    throw new Error('To be implemented')
   }
 }
 </script>

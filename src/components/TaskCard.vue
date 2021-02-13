@@ -50,7 +50,7 @@ export default class TaskCard extends Vue {
 
   @Watch('task.isRunning')
   async onIsRunningChanged (val: boolean, oldVal: boolean) {
-    if (val == false && oldVal) {
+    if (val === false && oldVal) {
       await this.stopTask()
     }
   }
@@ -66,7 +66,7 @@ export default class TaskCard extends Vue {
   }
 
   public async stopTask () {
-    const result = await IpcInvoker.invoke(IpcChannel.StopTask, this.task._id)
+    await IpcInvoker.invoke(IpcChannel.StopTask, this.task._id)
     clearInterval(this.interval)
     this.task.isRunning = false
     // await this.tasksStore.update(this.task);
