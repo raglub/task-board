@@ -1,11 +1,11 @@
 'use strict'
 import { app, protocol, BrowserWindow } from 'electron'
 import {
-  createProtocol,
+  createProtocol
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 import TypedIpcMain from '@/utils/typed-ipc-main'
-const path = require("path");
+const path = require('path')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -13,14 +13,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let win: BrowserWindow | null
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
-declare let __static: any;
+declare let __static: any
 
 function createWindow () {
   const preload = path.resolve(__static, 'preload.js')
   // Create the browser window.
-  win = new BrowserWindow({ 
+  win = new BrowserWindow({
     minWidth: 1024,
     width: 1024,
     minHeight: 768,
@@ -28,10 +28,11 @@ function createWindow () {
     webPreferences: {
     // Use pluginOptions.nodeIntegration, leave this alone
     // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-    nodeIntegration: false,
-    enableRemoteModule: false,
-    preload
-  } })
+      nodeIntegration: false,
+      enableRemoteModule: false,
+      preload
+    }
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     win.setIcon(__dirname + '/../assets/icons/png/icon.png')
@@ -73,8 +74,7 @@ app.on('ready', async () => {
   await TypedIpcMain.register()
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    
-    
+
     // Devtools extensions are broken in Electron 6.0.0 and greater
     // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
     // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode

@@ -44,18 +44,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
-import Task from "@/models/task";
+import Task from '@/models/task'
 import NewTask from '@/components/NewTask.vue'
 import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import TagList from '@/components/TagList.vue'
 import EditTask from '@/components/EditTask.vue'
-import { Actions } from '@/store/actions';
-import { Guid16 } from '@/types/guid16';
+import { Actions } from '@/store/actions'
+import { Guid16 } from '@/types/guid16'
 import TestStepFilter from '@/utils/test-steps-filter'
-import TaskEditModal from '@/utils/task-edit-modal';
+import TaskEditModal from '@/utils/task-edit-modal'
 
 @Component({
   components: {
@@ -69,9 +69,9 @@ import TaskEditModal from '@/utils/task-edit-modal';
 export default class Board extends Vue {
   @Prop() private msg!: string;
 
-  public searchText: string = "";
+  public searchText = '';
   public tasks: Task[] = [];
-  public isLoading: boolean = false;
+  public isLoading = false;
 
   public taskEditModalData = new TaskEditModal()
 
@@ -81,72 +81,62 @@ export default class Board extends Vue {
 
   public selectedTagIds: Guid16[] = []
 
-  public async loadTasks()
-  {
+  public async loadTasks () {
     this.tasks = await Actions.loadTasks(this, undefined)
   }
 
-  constructor() {
-    super();
+  constructor () {
+    super()
     this.filter = new TestStepFilter()
   }
-  
-  mounted() {
-    this.loadTasks();
+
+  mounted () {
+    this.loadTasks()
     window.addEventListener('beforeunload', this.beforeunload)
   }
 
   @Watch('$route', { immediate: true, deep: true })
-  onUrlChange(newVal: Route) {
-    console.log("route");
+  onUrlChange (newVal: Route) {
+    console.log('route')
   }
 
-  public async addTask(task: Task)
-  {
-    this.tasks.push(task);
+  public async addTask (task: Task) {
+    this.tasks.push(task)
   }
 
-  public async editTask(taskId: Guid16)
-  {
+  public async editTask (taskId: Guid16) {
     this.taskEditModalData.isVisible = true
     this.taskEditModalData.taskId = taskId
   }
 
-  public beforeunload(event: any) {
-    this.stopRunningTasks();
+  public beforeunload (event: any) {
+    this.stopRunningTasks()
   }
 
-  public canShowTask(task: Task): boolean
-  {
-    if(task.isClosed && !this.filter.showClosed)
-      return false;
+  public canShowTask (task: Task): boolean {
+    if (task.isClosed && !this.filter.showClosed) { return false }
 
     let tagIsSelected = false
     if (this.selectedTagIds.length > 0) {
       this.selectedTagIds.forEach(id => {
         if (task.tagIds.indexOf(id) > -1) {
           tagIsSelected = true
-          return
         }
-      });
+      })
       if (!tagIsSelected) {
         return false
       }
     }
-    if(this.searchText === '')
-      return true;
-    return task.name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1;
+    if (this.searchText === '') { return true }
+    return task.name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
   }
 
-  public async searchTasks()
-  {
-    console.log(this.searchText);
+  public async searchTasks () {
+    console.log(this.searchText)
   }
 
-  public stopRunningTasks()
-  {
-    for(var i=0; i < this.tasks.length; i++)
-    {
+  public stopRunningTasks () {
+    for (let i = 0; i < this.tasks.length; i++) {
       // this.tasks[i].stop()
     }
   }

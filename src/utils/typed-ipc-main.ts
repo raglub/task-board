@@ -1,23 +1,23 @@
-import DurationsStore from "@/db/stores/durationsStore";
-import { TagsStore } from "@/db/stores/tagsStore";
-import { TasksStore } from "@/db/stores/tasksStore";
-import CreateTagDto from "@/dtos/create-tag-dto";
-import { Duration } from "@/models/duration";
-import Tag from "@/models/tag";
-import Task from "@/models/task";
-import TaskEdit from "@/models/task-edit";
-import { Guid16 } from "@/types/guid16";
-import { ipcMain } from "electron";
-import { DateTimeConverter } from "./dateTimeConverter";
-import { IpcChannel } from "./ipc-channel";
-import { IpcCommands } from "./ipc-commands";
+import DurationsStore from '@/db/stores/durationsStore'
+import { TagsStore } from '@/db/stores/tagsStore'
+import { TasksStore } from '@/db/stores/tasksStore'
+import CreateTagDto from '@/dtos/create-tag-dto'
+import { Duration } from '@/models/duration'
+import Tag from '@/models/tag'
+import Task from '@/models/task'
+import TaskEdit from '@/models/task-edit'
+import { Guid16 } from '@/types/guid16'
+import { ipcMain } from 'electron'
+import { DateTimeConverter } from './dateTimeConverter'
+import { IpcChannel } from './ipc-channel'
+import { IpcCommands } from './ipc-commands'
 const appVersion = require('../../package.json').version
 
 class IpcApi implements IpcCommands {
-	async stopTask (taskId: Guid16) {
+  async stopTask (taskId: Guid16) {
     const durationsStore = new DurationsStore()
     const durations = await durationsStore.findAllForTaskId(taskId)
-		for(let i = 0; i < durations.length; i++) {
+    for (let i = 0; i < durations.length; i++) {
       const duration = durations[i]
       if (!duration.to) {
         duration.to = Date.now()
@@ -25,22 +25,22 @@ class IpcApi implements IpcCommands {
       }
     }
     return null
-	}
+  }
 
   async [IpcChannel.StartTask] (taskId: Guid16) {
     const durationsStore = new DurationsStore()
-		const duration = new Duration()
+    const duration = new Duration()
     duration.taskId = taskId
     duration.from = Date.now()
     return await durationsStore.insert(duration)
   }
 
   async [IpcChannel.FindDurationsForTask] (taskId: Guid16): Promise<Duration[]> {
-    return await new DurationsStore().findAllForTaskId(taskId);
+    return await new DurationsStore().findAllForTaskId(taskId)
   }
 
   async [IpcChannel.FindDurationsFromTo] (from: Date, to: Date): Promise<Duration[]> {
-    return await new DurationsStore().findFromTo(from, to);
+    return await new DurationsStore().findFromTo(from, to)
   }
 
   async [IpcChannel.FindOneTask] (taskId: Guid16): Promise<Task> {
@@ -57,21 +57,17 @@ class IpcApi implements IpcCommands {
 
   async [IpcChannel.TotalDurationForTask] (taskId: Guid16) {
     const store = new DurationsStore()
-    var durations = await store.findAllForTaskId(taskId)
-		
-    var value = 0;
-		durations.forEach( function( duration : Duration)
-		{
-			if( duration.to == null )
-			{
-				value += Date.now() - duration.from;
-			}
-			else
-			{
-				value += duration.to - duration.from;
-			}
-		} );
-		return DateTimeConverter.toHHMMSS( value/1000 );
+    const durations = await store.findAllForTaskId(taskId)
+
+    let value = 0
+    durations.forEach(function (duration: Duration) {
+      if (duration.to == null) {
+        value += Date.now() - duration.from
+      } else {
+        value += duration.to - duration.from
+      }
+    })
+    return DateTimeConverter.toHHMMSS(value / 1000)
   }
 
   async [IpcChannel.CreateTag] (name: string): Promise<Tag> {
@@ -82,24 +78,23 @@ class IpcApi implements IpcCommands {
     const newTag = await tagsStore.insert(tag)
     return newTag
   }
-  
+
   async [IpcChannel.CreateTask] (task: Task) {
     const tasksStore = new TasksStore()
-    task = await tasksStore.insert(task);
-    return task;
+    task = await tasksStore.insert(task)
+    return task
   }
 
   async [IpcChannel.FindAllTasks] () {
     const tasksStore = new TasksStore()
     const durationStore = new DurationsStore()
-    const result = [];
-    const tasks = await tasksStore.findAllAsync();
-    for(let i = 0; i < tasks.length; i++)
-    {
+    const result = []
+    const tasks = await tasksStore.findAllAsync()
+    for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i]
-      result.push(Task.cast(task));
+      result.push(Task.cast(task))
     }
-    return result;
+    return result
   }
 
   async [IpcChannel.UpdateTask] (taskEdit: TaskEdit): Promise<void> {
@@ -107,13 +102,13 @@ class IpcApi implements IpcCommands {
   }
 
   async [IpcChannel.MigrateDurationsToDurationsStore] (): Promise<void> {
-    console.info("The migration has been begun.")
+    console.info('The migration has been begun.')
     const tasksStore = await new TasksStore()
     const durationsStore = await new DurationsStore()
     const tasks = await tasksStore.findAllAsync()
-    for(let i = 0; i < tasks.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i]
-      for(let durationIndex = 0; durationIndex < task.durations.length; durationIndex++) {
+      for (let durationIndex = 0; durationIndex < task.durations.length; durationIndex++) {
         const duration = task.durations[durationIndex]
         let newDuration = new Duration()
         newDuration.taskId = task._id
@@ -136,24 +131,24 @@ class IpcApi implements IpcCommands {
         await tasksStore.update(taskEdit)
       }
     }
-    console.info("The migration has been finished.")
+    console.info('The migration has been finished.')
   }
 }
 
 export default class TypedIpcMain {
-	static async register () {
+  static async register () {
     try {
       const api = new IpcApi()
       const channels = Object.values(IpcChannel)
       for (let i = 0; i < channels.length; i++) {
         const channel = channels[i]
-        const method = (api as any)[channel] 
+        const method = (api as any)[channel]
         ipcMain.handle(channel, (event: any, ...args: any): any => {
           return method(...args)
         })
       }
-    }catch (err) {
+    } catch (err) {
       console.error(err)
     }
-	}
+  }
 }

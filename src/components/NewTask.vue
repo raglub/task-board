@@ -27,12 +27,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import TagList from '@/components/TagList.vue'
-import Task from "@/models/task";
-import { Guid16 } from '@/types/guid16';
-import { IpcChannel } from '@/utils/ipc-channel';
-import { IpcInvoker } from '@/utils/ipc-invoker';
+import Task from '@/models/task'
+import { Guid16 } from '@/types/guid16'
+import { IpcChannel } from '@/utils/ipc-channel'
+import { IpcInvoker } from '@/utils/ipc-invoker'
 
 @Component({
   components: {
@@ -40,27 +40,26 @@ import { IpcInvoker } from '@/utils/ipc-invoker';
   }
 })
 export default class NewTask extends Vue {
-  public name: string = '';
+  public name = '';
 
   public selectedTagIds: Guid16[] = []
 
-  constructor() {
-    super();
+  constructor () {
+    super()
   }
 
-  public async handleOk(bvModalEvt: any) {
-    let task = new Task();
-    task.name = this.name;
+  public async handleOk (bvModalEvt: any) {
+    const task = new Task()
+    task.name = this.name
     task.tagIds = this.selectedTagIds
     const newTask = await IpcInvoker.invoke(IpcChannel.CreateTask, task)
     task._id = newTask._id
-    this.$emit('addTask', task);
+    this.$emit('addTask', task)
   }
 
-  public resetModal() {
+  public resetModal () {
     this.name = ''
   }
-
 }
 </script>
 
