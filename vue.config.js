@@ -18,7 +18,7 @@ module.exports = {
         },
         nsis: {
           oneClick: false,
-          artifactName: "task-board-${version}-${os}64-setup.${ext}",
+          artifactName: 'task-board-${version}-${os}64-setup.${ext}',
           perMachine: false,
           createStartMenuShortcut: true,
           runAfterFinish: true

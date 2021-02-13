@@ -111,10 +111,6 @@ export default class EditTask extends Vue {
     }
   }
 
-  constructor () {
-    super()
-  }
-
   mounted () {
     this.loadView()
   }
@@ -133,7 +129,7 @@ export default class EditTask extends Vue {
     }
   }
 
-  public handleOk (bvModalEvt: any) {
+  public handleOk () {
     if (this.task) {
       const taskEdit = new TaskEdit()
       taskEdit._id = this.task._id

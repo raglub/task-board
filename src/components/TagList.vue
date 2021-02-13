@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Model, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Tag from '@/models/tag'
 import { Guid16 } from '@/types/guid16'
 import { IpcChannel } from '@/utils/ipc-channel'
@@ -26,9 +26,8 @@ export default class TagList extends Vue {
   public tags: Tag[] = []
 
   @Watch('value')
-  onChangeValue (newTagIds: Guid16[], oldTagIds: Guid16[]) {
+  onChangeValue (newTagIds: Guid16[]) { // , oldTagIds: Guid16[]
     if (newTagIds) {
-      const tagIds = newTagIds.filter((v, i, a) => a.indexOf(v) === i)
       if (this.tagIds.length !== newTagIds.length) {
         this.tagIds.length = 0
         this.tagIds.push(...newTagIds)
@@ -52,7 +51,7 @@ export default class TagList extends Vue {
     this.tags = await IpcInvoker.invoke(IpcChannel.GetAllTags)
   }
 
-  updateTags (ctx: any) {
+  updateTags () {
     this.$emit('input', this.tagIds)
   }
 }

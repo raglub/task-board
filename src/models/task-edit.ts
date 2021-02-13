@@ -2,17 +2,17 @@ import { Duration } from '@/models/duration'
 import { Guid16 } from '@/types/guid16'
 
 export default class TaskEdit {
-	name = ''
+  name = ''
 
-	description: string | undefined = undefined
+  description: string | undefined = undefined
 
-	_id: Guid16 = ''
+  _id: Guid16 = ''
 
-	durations: Duration[] = []
+  durations: Duration[] = []
 
-	isClosed = false;
+  isClosed = false;
 
-	isRunning = false
+  isRunning = false
 
-	tagIds: string[] = []
+  tagIds: string[] = []
 }

@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 
 import { RootState } from './state'
 // import { Getters, getters } from './getters'
-import { Mutations, mutations } from './mutations'
-import { Actions, actions } from './actions'
+import { mutations } from './mutations'
+import { actions } from './actions'
 
 Vue.use(Vuex)
 

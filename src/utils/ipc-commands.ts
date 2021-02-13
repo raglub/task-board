@@ -1,4 +1,3 @@
-import CreateTagDto from '@/dtos/create-tag-dto'
 import { Duration } from '@/models/duration'
 import Tag from '@/models/tag'
 import Task from '@/models/task'
