@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Route } from 'vue-router'
 import Task from '@/models/task'
 import NewTask from '@/components/NewTask.vue'
 import NewTag from '@/components/NewTag.vue'
@@ -96,7 +95,7 @@ export default class Board extends Vue {
   }
 
   @Watch('$route', { immediate: true, deep: true })
-  onUrlChange (newVal: Route) {
+  onUrlChange () { // newVal: Route
     console.log('route')
   }
 
@@ -109,7 +108,7 @@ export default class Board extends Vue {
     this.taskEditModalData.taskId = taskId
   }
 
-  public beforeunload (event: any) {
+  public beforeunload () { // event: any
     this.stopRunningTasks()
   }
 

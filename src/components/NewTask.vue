@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import TagList from '@/components/TagList.vue'
 import Task from '@/models/task'
 import { Guid16 } from '@/types/guid16'
@@ -44,11 +44,7 @@ export default class NewTask extends Vue {
 
   public selectedTagIds: Guid16[] = []
 
-  constructor () {
-    super()
-  }
-
-  public async handleOk (bvModalEvt: any) {
+  public async handleOk () {
     const task = new Task()
     task.name = this.name
     task.tagIds = this.selectedTagIds

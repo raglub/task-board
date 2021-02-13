@@ -1,4 +1,4 @@
 export default class CreateTagDto {
-	name = '';
-	description = ''
+  name = '';
+  description = ''
 }

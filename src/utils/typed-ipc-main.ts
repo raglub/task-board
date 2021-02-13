@@ -87,7 +87,6 @@ class IpcApi implements IpcCommands {
 
   async [IpcChannel.FindAllTasks] () {
     const tasksStore = new TasksStore()
-    const durationStore = new DurationsStore()
     const result = []
     const tasks = await tasksStore.findAllAsync()
     for (let i = 0; i < tasks.length; i++) {

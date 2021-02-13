@@ -50,8 +50,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { DateTimeConverter } from '../utils/dateTimeConverter'
-const Moment = require('moment')
+import Moment from 'moment'
 
 @Component
 export default class DateTime extends Vue {
@@ -64,16 +63,14 @@ export default class DateTime extends Vue {
 
   constructor () {
     super()
-    // if( epochDateTime == undefined )
-    //	return "";
     this.time = Moment.unix(this.datetime / 1000).format('HH:mm:ss')
     this.date = Moment.unix(this.datetime / 1000).format('YYYY-MM-DD')
   }
 
-  onContext (ctx: any) {
-    let datetime = new Moment(this.date + ' ' + this.time).unix()
-    datetime *= 1000
-    this.$emit('update:datetime', datetime)
+  onContext () {
+    // let datetime = new Moment(this.date + ' ' + this.time).unix()
+    // datetime *= 1000
+    // this.$emit('update:datetime', datetime)
   }
 }
 </script>

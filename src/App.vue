@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 
 @Component({
@@ -29,10 +29,6 @@ import { Route } from 'vue-router'
   }
 })
 export default class Board extends Vue {
-  constructor () {
-    super()
-  }
-
   @Watch('$route', { immediate: true, deep: true })
   onUrlChange (newVal: Route) {
     console.log(newVal)

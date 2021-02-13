@@ -13,7 +13,7 @@
 <script lang="ts">
 import { IpcChannel } from '@/utils/ipc-channel'
 import { IpcInvoker } from '@/utils/ipc-invoker'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
 })

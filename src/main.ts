@@ -1,4 +1,4 @@
-import devtools from '@vue/devtools'
+// import devtools from '@vue/devtools'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'

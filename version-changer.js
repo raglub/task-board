@@ -1,5 +1,6 @@
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
+const fs = require('fs')
 
 async function changeVersion () {
   const describe = await exec('git describe --tags')
@@ -26,14 +27,13 @@ async function changeVersion () {
   console.log(`distance: ${distance}`)
   console.log(`commitHash: ${commitHash}`)
 
-  var fs = require('fs')
   fs.readFile('package.json', 'utf8', function (err, data) {
     if (err) {
       return console.log(err)
     }
 
-    var result = data.replace(/"version": ".*"/g, `"version": "${version}"`)
-    var result = result.replace(/"commitHash": ".*"/g, `"commitHash": "${commitHash}"`)
+    let result = data.replace(/"version": ".*"/g, `"version": "${version}"`)
+    result = result.replace(/"commitHash": ".*"/g, `"commitHash": "${commitHash}"`)
 
     fs.writeFile('package.json', result, 'utf8', function (err) {
       if (err) return console.log(err)
