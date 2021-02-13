@@ -1,6 +1,5 @@
-export default class Tag
-{
+export default class Tag {
 	name = '';
 	description = ''
-	_id: string = '';
+	_id = '';
 }

@@ -5,7 +5,7 @@ import Calendar from '../views/Calendar.vue'
 
 Vue.use(VueRouter)
 
-  const routes: Array<RouteConfig> = [
+const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Board',

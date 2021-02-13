@@ -7,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Model, Watch } from 'vue-property-decorator';
-import Tag from '@/models/tag';
-import { Guid16 } from '@/types/guid16';
-import { IpcChannel } from '@/utils/ipc-channel';
-import { IpcInvoker } from '@/utils/ipc-invoker';
+import { Component, Prop, Vue, Model, Watch } from 'vue-property-decorator'
+import Tag from '@/models/tag'
+import { Guid16 } from '@/types/guid16'
+import { IpcChannel } from '@/utils/ipc-channel'
+import { IpcInvoker } from '@/utils/ipc-invoker'
 
 @Component({
   components: {
@@ -26,33 +26,33 @@ export default class TagList extends Vue {
   public tags: Tag[] = []
 
   @Watch('value')
-  onChangeValue(newTagIds: Guid16[], oldTagIds: Guid16[]){
+  onChangeValue (newTagIds: Guid16[], oldTagIds: Guid16[]) {
     if (newTagIds) {
-      const tagIds = newTagIds.filter((v, i, a) => a.indexOf(v) === i);
+      const tagIds = newTagIds.filter((v, i, a) => a.indexOf(v) === i)
       if (this.tagIds.length !== newTagIds.length) {
         this.tagIds.length = 0
         this.tagIds.push(...newTagIds)
       } else {
-        for(let i = 0; i < this.tagIds.length; i++) {
+        for (let i = 0; i < this.tagIds.length; i++) {
           if (this.tagIds[i] !== newTagIds[i]) {
             this.tagIds.length = 0
             this.tagIds.push(...newTagIds)
             break
-          } 
+          }
         }
       }
     }
   }
 
-  mounted() {
+  mounted () {
     this.loadView()
   }
 
-  async loadView() {
+  async loadView () {
     this.tags = await IpcInvoker.invoke(IpcChannel.GetAllTags)
   }
 
-  updateTags(ctx: any) {
+  updateTags (ctx: any) {
     this.$emit('input', this.tagIds)
   }
 }

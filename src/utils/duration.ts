@@ -1,27 +1,21 @@
-import { DateTimeConverter} from "./dateTimeConverter";
+import { DateTimeConverter } from './dateTimeConverter'
 
-export class Duration
-{
-	public from: number;
+export class Duration {
+  public from: number;
 
-	public to: number | null;
+  public to: number | null;
 
-    constructor()
-	{
-		this.from = -1;
-		this.to = null;
-	}
-	
-	public fromToString() : string
-	{
-		return new DateTimeConverter().toString(this.from)
-	}
+  constructor () {
+    this.from = -1
+    this.to = null
+  }
 
-	public toToString() : string
-	{
-		if(this.to == null)
-			return new DateTimeConverter().toString(0);
-		return new DateTimeConverter().toString(this.to)
-	}
-	
+  public fromToString (): string {
+    return new DateTimeConverter().toString(this.from)
+  }
+
+  public toToString (): string {
+    if (this.to == null) { return new DateTimeConverter().toString(0) }
+    return new DateTimeConverter().toString(this.to)
+  }
 }
