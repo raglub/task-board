@@ -26,7 +26,6 @@ export default class About extends Vue {
 
   async loadView () {
     this.version = await IpcInvoker.invoke(IpcChannel.GetVersion)
-    await IpcInvoker.invoke(IpcChannel.MigrateDurationsToDurationsStore)
   }
 }
 </script>
