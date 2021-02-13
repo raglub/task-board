@@ -1,5 +1,5 @@
 declare global {
-    interface Window { ipcRenderer: any; }
+    interface Window { ipcRenderer: any }
   }
-  
-export default global;
+
+export default global

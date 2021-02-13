@@ -1,5 +1,4 @@
-export default class CreateTagDto
-{
+export default class CreateTagDto {
 	name = '';
 	description = ''
 }

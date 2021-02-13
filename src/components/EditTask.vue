@@ -66,8 +66,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import Task from "@/models/task"
-import { Duration } from "@/models/duration"
+import Task from '@/models/task'
+import { Duration } from '@/models/duration'
 import DateTime from './DateTime.vue'
 import TagList from '@/components/TagList.vue'
 import { Guid16 } from '@/types/guid16'
@@ -87,9 +87,9 @@ export default class EditTask extends Vue {
 
   public durations: Duration[] = [];
 
-  public name: string = '';
+  public name = '';
 
-  public isClosed: boolean = false;
+  public isClosed = false;
 
   @Prop()
   private modal!: TaskEditModal;
@@ -99,67 +99,65 @@ export default class EditTask extends Vue {
   public selectedTagIds: Guid16[] = []
 
   get modalShow () {
-    if (!!this.modal) {
+    if (this.modal) {
       return this.modal.isVisible
     }
     return false
   }
 
-  set modalShow(value: boolean) {
+  set modalShow (value: boolean) {
     if (this.modal) {
       this.modal.isVisible = value
     }
   }
 
-  constructor() {
-    super();
+  constructor () {
+    super()
   }
 
-  mounted() {
+  mounted () {
     this.loadView()
   }
 
-  async loadView() {
+  async loadView () {
     if (this.modal.taskId) {
       const task = await IpcInvoker.invoke(IpcChannel.FindOneTask, this.modal.taskId)
       const durations = await IpcInvoker.invoke(IpcChannel.FindDurationsForTask, this.modal.taskId)
       this.selectedTagIds.length = 0
       this.selectedTagIds.push(...task.tagIds)
       this.task = task
-      this.description = this.task.description;
-      this.durations = durations;
-      this.isClosed = this.task.isClosed;
-      this.name = this.task.name;
+      this.description = this.task.description
+      this.durations = durations
+      this.isClosed = this.task.isClosed
+      this.name = this.task.name
     }
   }
 
-  public handleOk(bvModalEvt: any) {
+  public handleOk (bvModalEvt: any) {
     if (this.task) {
       const taskEdit = new TaskEdit()
       taskEdit._id = this.task._id
       taskEdit.name = this.name
-      taskEdit.description = this.description;
-      taskEdit.durations = this.durations;
-      taskEdit.isClosed = this.isClosed;
+      taskEdit.description = this.description
+      taskEdit.durations = this.durations
+      taskEdit.isClosed = this.isClosed
       taskEdit.tagIds = this.selectedTagIds
       IpcInvoker.invoke(IpcChannel.UpdateTask, taskEdit)
     }
   }
 
-  public resetModal() {
-    //this.description = this.task.description;
-    //this.durations = [...this.task.durations];
-    //this.isClosed = this.task.isClosed;
-    //this.name = this.task.name;
+  public resetModal () {
+    // this.description = this.task.description;
+    // this.durations = [...this.task.durations];
+    // this.isClosed = this.task.isClosed;
+    // this.name = this.task.name;
   }
 
-  async showModal() 
-  {
+  async showModal () {
     await this.loadView()
   }
 
-  public deleteDurationAt(index: number)
-  {
+  public deleteDurationAt (index: number) {
     this.$delete(this.durations, index)
   }
 }

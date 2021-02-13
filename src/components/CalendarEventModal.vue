@@ -15,24 +15,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import Task from "@/models/task";
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import Task from '@/models/task'
 import { VueCalEvent } from '@/utils/vueCalEvent'
 
 @Component
 export default class CalendarEventModal extends Vue {
-  public name: string = '';
+  public name = '';
 
   @Prop()
   private vueCalEvent!: VueCalEvent | undefined;
 
-  constructor() {
-    super();
+  constructor () {
+    super()
   }
 
-  public clickOk(bvModalEvt: any) {
+  public clickOk (bvModalEvt: any) {
   }
-
 }
 </script>
 

@@ -1,12 +1,11 @@
-import { Guid16 } from '@/types/guid16';
+import { Guid16 } from '@/types/guid16'
 
-export class Duration
-{
+export class Duration {
     _id: Guid16 = '';
 
-	from: number = -1
+	from = -1
 
 	to: number | null = null
-    
-    taskId: Guid16 = ''   
+
+    taskId: Guid16 = ''
 }

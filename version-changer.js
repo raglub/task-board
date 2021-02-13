@@ -1,4 +1,4 @@
-const { promisify } = require('util');
+const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
 
 async function changeVersion () {
@@ -13,33 +13,33 @@ async function changeVersion () {
     version += `+${distance}-${commitHash}`
   }
 
-  process.env['APP_VERSION'] = version
+  process.env.APP_VERSION = version
   fs.writeFile('version.txt', version, 'utf8', function (err) {
-    if (err) return console.log(err);
-  });
-  process.env['LATEST_TAG_DISTANCE'] = distance
+    if (err) return console.log(err)
+  })
+  process.env.LATEST_TAG_DISTANCE = distance
   fs.writeFile('tag_distance.txt', distance, 'utf8', function (err) {
-    if (err) return console.log(err);
-  });
+    if (err) return console.log(err)
+  })
 
   console.log(`version: ${version}`)
   console.log(`distance: ${distance}`)
   console.log(`commitHash: ${commitHash}`)
 
   var fs = require('fs')
-  fs.readFile('package.json', 'utf8', function (err,data) {
+  fs.readFile('package.json', 'utf8', function (err, data) {
     if (err) {
-        return console.log(err);
+      return console.log(err)
     }
 
-    var result = data.replace(/"version": ".*"/g, `"version": "${version}"`);
-    var result = result.replace(/"commitHash": ".*"/g, `"commitHash": "${commitHash}"`);
+    var result = data.replace(/"version": ".*"/g, `"version": "${version}"`)
+    var result = result.replace(/"commitHash": ".*"/g, `"commitHash": "${commitHash}"`)
 
     fs.writeFile('package.json', result, 'utf8', function (err) {
-        if (err) return console.log(err);
-    });
+      if (err) return console.log(err)
+    })
     console.log(result)
-  });
+  })
 };
 
 changeVersion()

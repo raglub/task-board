@@ -11,27 +11,22 @@
 </template>
 
 <script lang="ts">
-import { IpcChannel } from '@/utils/ipc-channel';
-import { IpcInvoker } from '@/utils/ipc-invoker';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { IpcChannel } from '@/utils/ipc-channel'
+import { IpcInvoker } from '@/utils/ipc-invoker'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component({
 })
 export default class About extends Vue {
   public version = ''
 
-  constructor() {
-    super();
-  }
-
-  mounted() {
+  mounted () {
     this.loadView()
   }
 
-  async loadView() {
+  async loadView () {
     this.version = await IpcInvoker.invoke(IpcChannel.GetVersion)
     await IpcInvoker.invoke(IpcChannel.MigrateDurationsToDurationsStore)
-
   }
 }
 </script>

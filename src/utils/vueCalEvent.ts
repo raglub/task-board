@@ -12,18 +12,18 @@ export class VueCalEvent {
     title: string;
     to: number
 
-    constructor() {
-        this.allDay= false;
-        this.background = false;
-        this.class = '';
-        this.content = '';
-        this.daysCount = 0;
-        this.end = new Date();
-        this.endTimeMinutes = 0;
-        this.from = 0;
-        this.name = '';
-        this.start = new Date();
-        this.title = '';
-        this.to = 0
+    constructor () {
+      this.allDay = false
+      this.background = false
+      this.class = ''
+      this.content = ''
+      this.daysCount = 0
+      this.end = new Date()
+      this.endTimeMinutes = 0
+      this.from = 0
+      this.name = ''
+      this.start = new Date()
+      this.title = ''
+      this.to = 0
     }
 }
