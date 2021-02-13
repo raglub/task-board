@@ -22,5 +22,4 @@ export type IpcCommands = {
   [IpcChannel.StartTask]: (taskId: Guid16) => Promise<Duration>;
   [IpcChannel.TotalDurationForTask]: (taksId: Guid16) => Promise<string>;
   [IpcChannel.UpdateTask]: (taskEdit: TaskEdit) => Promise<void>;
-  [IpcChannel.MigrateDurationsToDurationsStore]: () => Promise<void>;
 };
