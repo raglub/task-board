@@ -4,8 +4,12 @@
       <b-row class="mb-1 mt-2">
         <b-col>
           <b-nav-form>
-            <b-form-input size="sm" v-model="searchText" class="mr-sm-2" placeholder="Search"></b-form-input>
-            <b-button size="sm" @click="searchTasks" class="my-2 my-sm-0" type="submit">Search</b-button>
+            <b-input-group size="sm">
+              <b-input-group-prepend is-text>
+                <b-icon icon="search"></b-icon>
+              </b-input-group-prepend>
+              <b-form-input type="search" v-model="searchText" @input="refreshList" class="mr-sm-2" placeholder="Search"></b-form-input>
+            </b-input-group>
           </b-nav-form>
         </b-col>
         <b-col>
@@ -20,15 +24,16 @@
       </b-row>
       <b-row class="mb-1 mt-2">
         <b-col>
-          <tag-list v-model="selectedTagIds"></tag-list>
+          <tag-list v-model="selectedTagIds" @input="refreshList"></tag-list>
         </b-col>
       </b-row>
       <b-form-checkbox
         v-model="filter.showClosed"
+        @input="refreshList"
       >
         Show closed
       </b-form-checkbox>
-      <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id" v-show="canShowTask(task)">
+      <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id">
         <b-col>
           <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks">
             <template v-slot:buttons>
@@ -37,6 +42,15 @@
           </TaskCard>
         </b-col>
       </b-row>
+      <div class="mt-3">
+        <b-pagination class="justify-content-center"
+          v-model="currentPage"
+          pills
+          :per-page="filter.perPage"
+          @input="refreshList"
+          :total-rows="totalPages">
+        </b-pagination>
+      </div>
       <new-task @addTask="addTask"/>
       <edit-task :modal="taskEditModalData" />
       <new-tag/>
@@ -51,9 +65,8 @@ import NewTag from '@/components/NewTag.vue'
 import TaskCard from '@/components/TaskCard.vue'
 import TagList from '@/components/TagList.vue'
 import EditTask from '@/components/EditTask.vue'
-import { Actions } from '@/store/actions'
 import { Guid16 } from '@/types/guid16'
-import TestStepFilter from '@/utils/test-steps-filter'
+import TaskFilter from '@/utils/task-filter'
 import TaskEditModal from '@/utils/task-edit-modal'
 
 @Component({
@@ -68,29 +81,35 @@ import TaskEditModal from '@/utils/task-edit-modal'
 export default class Board extends Vue {
   @Prop() private msg!: string;
 
-  public searchText = '';
-  public tasks: Task[] = [];
+  public currentPage = 1
+  public totalPages = 1
+  public searchText = ''
+  public tasks: Task[] = []
   public isLoading = false;
 
   public taskEditModalData = new TaskEditModal()
 
-  public filter: TestStepFilter
+  public filter: TaskFilter
 
   public canShowAddTaskModal = false;
 
   public selectedTagIds: Guid16[] = []
 
-  public async loadTasks () {
-    this.tasks = await Actions.loadTasks(this, undefined)
+  public async refreshList () {
+    this.filter.searchText = this.searchText
+    this.filter.page = this.currentPage
+    this.filter.tagIds = this.selectedTagIds
+    this.totalPages = await this.$store.direct.dispatch.countTasks(this.filter)
+    this.tasks = await this.$store.direct.dispatch.loadTasks(this.filter)
   }
 
   constructor () {
     super()
-    this.filter = new TestStepFilter()
+    this.filter = new TaskFilter()
   }
 
   mounted () {
-    this.loadTasks()
+    this.refreshList()
     window.addEventListener('beforeunload', this.beforeunload)
   }
 
@@ -110,28 +129,6 @@ export default class Board extends Vue {
 
   public beforeunload () { // event: any
     this.stopRunningTasks()
-  }
-
-  public canShowTask (task: Task): boolean {
-    if (task.isClosed && !this.filter.showClosed) { return false }
-
-    let tagIsSelected = false
-    if (this.selectedTagIds.length > 0) {
-      this.selectedTagIds.forEach(id => {
-        if (task.tagIds.indexOf(id) > -1) {
-          tagIsSelected = true
-        }
-      })
-      if (!tagIsSelected) {
-        return false
-      }
-    }
-    if (this.searchText === '') { return true }
-    return task.name.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
-  }
-
-  public async searchTasks () {
-    console.log(this.searchText)
   }
 
   public stopRunningTasks () {
