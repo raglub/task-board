@@ -5,6 +5,7 @@ import DurationsStore from './durationsStore'
 import { Duration } from '@/utils/duration'
 import TaskEdit from '@/models/task-edit'
 import Datastore from 'nedb-promises'
+import TaskFilter from '@/utils/task-filter'
 
 export class TasksStore {
   static db: any
@@ -31,15 +32,22 @@ export class TasksStore {
     })
   }
 
-  async findAllAsync (): Promise<Task[]> {
+  async findAllAsync (filter: TaskFilter): Promise<Task[]> {
     let result: Task[] = []
     const durationStore = new DurationsStore()
-    const rawTasks: Task[] = await TasksStore.db.find({})
+    let rawTasks: Task[]
+    const query = this.queryForFilter(filter)
+    rawTasks = await TasksStore.db.find(query).skip((filter.page-1)*filter.perPage).limit(filter.perPage)
     await rawTasks.forEach(async (task) => {
       task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
     })
     result = plainToClass(Task, rawTasks)
     return result
+  }
+
+  async countAsync (filter: TaskFilter): Promise<number> {
+    const query = this.queryForFilter(filter)
+    return await TasksStore.db.count(query)
   }
 
   public async findAsync (id: string): Promise<Task> {
@@ -48,6 +56,25 @@ export class TasksStore {
     const durationStore = new DurationsStore()
     task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
     return task
+  }
+
+  private queryForFilter(filter: TaskFilter) {
+    let query: any = {}
+    if (!filter.showClosed) {
+      query = {isClosed: false}
+      query['isClosed'] = false
+    }
+    if (filter.searchText !== '') {
+      query['name'] = new RegExp(filter.searchText, 'i')
+    }
+    if (filter.tagIds.length > 0) {
+      const tagIdsQuery: any[] = []
+      filter.tagIds.forEach(id => {
+        tagIdsQuery.push({ tagIds: id })
+      })
+      query['$and'] = tagIdsQuery
+    }
+    return query
   }
 
   /// **

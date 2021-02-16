@@ -11,6 +11,7 @@ import { ipcMain } from 'electron'
 import { DateTimeConverter } from './dateTimeConverter'
 import { IpcChannel } from './ipc-channel'
 import { IpcCommands } from './ipc-commands'
+import TaskFilter from './task-filter'
 const appVersion = require('../../package.json').version
 
 class IpcApi implements IpcCommands {
@@ -85,15 +86,20 @@ class IpcApi implements IpcCommands {
     return task
   }
 
-  async [IpcChannel.FindAllTasks] () {
+  async [IpcChannel.FindAllTasks] (filter: TaskFilter) {
     const tasksStore = new TasksStore()
     const result = []
-    const tasks = await tasksStore.findAllAsync()
+    const tasks = await tasksStore.findAllAsync(filter)
     for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i]
       result.push(Task.cast(task))
     }
     return result
+  }
+
+  async [IpcChannel.CountTasks] (filter: TaskFilter) {
+    const tasksStore = new TasksStore()
+    return await tasksStore.countAsync(filter)
   }
 
   async [IpcChannel.UpdateTask] (taskEdit: TaskEdit): Promise<void> {
