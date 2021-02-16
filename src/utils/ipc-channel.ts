@@ -1,4 +1,5 @@
 export enum IpcChannel {
+    CountTasks = 'countTasks',
     CreateTag = 'createTag',
     CreateTask = 'createTask',
     FindDurationsFromTo = 'findDurationsFromTo',
