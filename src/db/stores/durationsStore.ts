@@ -35,6 +35,17 @@ export default class DurationsStore {
     return await DurationsStore.db.find({ taskId: taskId })
   }
 
+  public async stopActive (): Promise<void> {
+    const durations = await DurationsStore.db.find({ to: null })
+    for (let i = 0; i < durations.length; i++) {
+      const duration = durations[i]
+      if (!duration.to) {
+        duration.to = Date.now()
+        await this.update(duration)
+      }
+    }
+  }
+
   public async find (id: string): Promise<Duration> {
     const durations = await DurationsStore.db.find({ _id: id })
     return durations[0]

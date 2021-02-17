@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import Task from '@/models/task'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { IpcInvoker } from '@/utils/ipc-invoker'
@@ -39,37 +39,40 @@ export default class TaskCard extends Vue {
   @Prop()
   private task!: Task;
 
-  constructor () {
-    super()
+  async mounted () {
     this.loadView()
+    this.refreshDurationContinuously()
+  }
+
+  destroyed () {
+    clearInterval(this.interval)
   }
 
   async loadView () {
     this.duration = await IpcInvoker.invoke(IpcChannel.TotalDurationForTask, this.task._id)
   }
 
-  @Watch('task.isRunning')
-  async onIsRunningChanged (val: boolean, oldVal: boolean) {
-    if (val === false && oldVal) {
-      await this.stopTask()
-    }
-  }
-
   public async startTask () {
-    this.$emit('stopRunningTasks')
     await IpcInvoker.invoke(IpcChannel.StartTask, this.task._id)
+    this.$emit('refreshTasks')
     this.task.isRunning = true
-    this.interval = setInterval(async () => {
-      this.duration = await IpcInvoker.invoke(IpcChannel.TotalDurationForTask, this.task._id)
-    }, 1000)
-    // await this.tasksStore.update(this.task);
+    this.refreshDurationContinuously()
   }
 
   public async stopTask () {
     await IpcInvoker.invoke(IpcChannel.StopTask, this.task._id)
     clearInterval(this.interval)
     this.task.isRunning = false
-    // await this.tasksStore.update(this.task);
+  }
+
+  private async refreshDurationContinuously () {
+    if (this.task !== null) {
+      if (this.task.isRunning === true) {
+        this.interval = setInterval(async () => {
+          this.duration = await IpcInvoker.invoke(IpcChannel.TotalDurationForTask, this.task._id)
+        }, 1000)
+      }
+    }
   }
 }
 </script>
