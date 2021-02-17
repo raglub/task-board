@@ -8,8 +8,6 @@ export default class Task {
   _id: Guid16;
   parentId: string | undefined;
 
-  durations: Duration[];
-
   isClosed = false;
 
   isRunning: boolean;
@@ -21,7 +19,6 @@ export default class Task {
     this._id = ''
     this.description = undefined
     this.parentId = undefined
-    this.durations = []
     this.isClosed = false
     this.isRunning = false
   }
@@ -32,24 +29,6 @@ export default class Task {
 
   static plainToClass (plain: any): Task {
     const result = plainToClass(Task, plain)[0]
-    const durations: Duration[] = []
-    result.durations.forEach(function (duration: Duration) {
-      const newDuration = plainToClass(Duration, duration)
-      durations.push(newDuration)
-    })
-    result.durations = durations
     return result
-  }
-
-  stop (): void {
-    if (this.isRunning === true) {
-      this.isRunning = false
-      if (this.durations.length > 0) {
-        const duration = this.durations[this.durations.length - 1]
-        if (duration.to == null) {
-          duration.to = Date.now()
-        }
-      }
-    }
   }
 }
