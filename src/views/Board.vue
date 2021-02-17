@@ -35,7 +35,7 @@
       </b-form-checkbox>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id">
         <b-col>
-          <TaskCard v-bind:task="task" @stopRunningTasks="stopRunningTasks">
+          <TaskCard v-bind:task="task" @refreshTasks="refreshList">
             <template v-slot:buttons>
               <b-dropdown-item @click="editTask(task._id)">Edit Task</b-dropdown-item>
             </template>
@@ -100,7 +100,8 @@ export default class Board extends Vue {
     this.filter.page = this.currentPage
     this.filter.tagIds = this.selectedTagIds
     this.totalPages = await this.$store.direct.dispatch.countTasks(this.filter)
-    this.tasks = await this.$store.direct.dispatch.loadTasks(this.filter)
+    const tasks = await this.$store.direct.dispatch.loadTasks(this.filter)
+    this.tasks = tasks
   }
 
   constructor () {
@@ -110,7 +111,6 @@ export default class Board extends Vue {
 
   mounted () {
     this.refreshList()
-    window.addEventListener('beforeunload', this.beforeunload)
   }
 
   @Watch('$route', { immediate: true, deep: true })
@@ -125,16 +125,6 @@ export default class Board extends Vue {
   public async editTask (taskId: Guid16) {
     this.taskEditModalData.isVisible = true
     this.taskEditModalData.taskId = taskId
-  }
-
-  public beforeunload () { // event: any
-    this.stopRunningTasks()
-  }
-
-  public stopRunningTasks () {
-    for (let i = 0; i < this.tasks.length; i++) {
-      // this.tasks[i].stop()
-    }
   }
 }
 </script>

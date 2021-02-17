@@ -38,9 +38,16 @@ export class TasksStore {
     let rawTasks: Task[]
     const query = this.queryForFilter(filter)
     rawTasks = await TasksStore.db.find(query).skip((filter.page-1)*filter.perPage).limit(filter.perPage)
-    await rawTasks.forEach(async (task) => {
-      task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
-    })
+    for (let i = 0; i < rawTasks.length; i++) {
+      const task = rawTasks[i]
+      const durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
+      task.isRunning = false;
+      durations.forEach(duration => {
+        if (duration.to === null) {
+          task.isRunning = true;
+        }
+      })
+    }
     result = plainToClass(Task, rawTasks)
     return result
   }
@@ -53,8 +60,6 @@ export class TasksStore {
   public async findAsync (id: string): Promise<Task> {
     const rawTask = await TasksStore.db.find({ _id: id })
     const task = Task.plainToClass(rawTask)
-    const durationStore = new DurationsStore()
-    task.durations = (await durationStore.findAllForTaskId(task._id)) as any as Duration[]
     return task
   }
 
@@ -79,8 +84,6 @@ export class TasksStore {
 
   /// **
   // * @description Updates exising Task to database.
-  // * @param {string} id
-  // * @param {Task} task
   // */
   public async update (taskEdit: TaskEdit) {
     if (taskEdit._id === undefined) { throw new Error('Id for task is undefined') }
@@ -90,7 +93,6 @@ export class TasksStore {
     task.isRunning = taskEdit.isRunning
     task.name = taskEdit.name
     task.tagIds = taskEdit.tagIds
-    task.durations.length = 0
     await TasksStore.db.update({ _id: task._id }, task)
     const durationStore = new DurationsStore()
     await taskEdit.durations.forEach(async (duration) => {

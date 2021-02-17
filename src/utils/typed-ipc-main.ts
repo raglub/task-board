@@ -30,6 +30,7 @@ class IpcApi implements IpcCommands {
 
   async [IpcChannel.StartTask] (taskId: Guid16) {
     const durationsStore = new DurationsStore()
+    await durationsStore.stopActive()
     const duration = new Duration()
     duration.taskId = taskId
     duration.from = Date.now()
