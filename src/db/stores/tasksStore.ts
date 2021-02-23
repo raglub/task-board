@@ -97,8 +97,23 @@ export class TasksStore {
     const durationStore = new DurationsStore()
     await taskEdit.durations.forEach(async (duration) => {
       const oldDuration = await durationStore.find(duration._id)
-      if (oldDuration.from !== duration.from || oldDuration.to !== duration.to) {
-        await durationStore.update(duration)
+      
+      if (duration.action === 'edit') {
+        oldDuration.from = duration.from
+        oldDuration.to = duration.to
+        await durationStore.update(oldDuration)
+      }
+      if (duration.action === 'delete') {
+        await durationStore.remove(duration._id)
+      }
+
+      if (duration.action === 'new') {
+        await durationStore.insert({
+          from: duration.from,
+          to: duration.to,
+          taskId: duration.taskId,
+          _id: ''
+        })
       }
     })
   }
