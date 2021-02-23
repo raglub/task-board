@@ -22,7 +22,6 @@
         </b-input-group-append>
       </b-input-group>
     </div>
-
     <div style="width: 140px;" class="pl-1">
       <b-input-group>
         <b-form-input
@@ -49,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Moment from 'moment'
 
 @Component
@@ -58,19 +57,29 @@ export default class DateTime extends Vue {
 
   public time = '';
 
+  @Watch('time')
+  onChangeTimeValue (newTime: string) {
+    this.$emit('afterUpdate')
+  }
+
+  @Watch('date')
+  onChangeDateValue (newTime: string) {
+    this.$emit('afterUpdate')
+  }
+
   @Prop()
-  private datetime!: number;
+  private value!: number;
 
   constructor () {
     super()
-    this.time = Moment.unix(this.datetime / 1000).format('HH:mm:ss')
-    this.date = Moment.unix(this.datetime / 1000).format('YYYY-MM-DD')
+    this.time = Moment.unix(this.value / 1000).format('HH:mm:ss')
+    this.date = Moment.unix(this.value / 1000).format('YYYY-MM-DD')
   }
 
   onContext () {
-    // let datetime = new Moment(this.date + ' ' + this.time).unix()
-    // datetime *= 1000
-    // this.$emit('update:datetime', datetime)
+    let datetime = Moment(this.date + ' ' + this.time).unix()
+    datetime *= 1000
+    this.$emit('input', datetime)
   }
 }
 </script>
