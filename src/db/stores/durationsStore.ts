@@ -32,7 +32,7 @@ export default class DurationsStore {
   }
 
   public async findAllForTaskId (taskId: Guid16): Promise<Duration[]> {
-    return await DurationsStore.db.find({ taskId: taskId })
+    return await DurationsStore.db.find({ taskId: taskId }).sort({ from: 1 })
   }
 
   public async stopActive (): Promise<void> {
@@ -49,6 +49,10 @@ export default class DurationsStore {
   public async find (id: string): Promise<Duration> {
     const durations = await DurationsStore.db.find({ _id: id })
     return durations[0]
+  }
+
+  public async remove (id: string): Promise<void> {
+    await DurationsStore.db.remove({ _id: id })
   }
 
   public async findFromTo (from: Date, to: Date): Promise<Duration[]> {

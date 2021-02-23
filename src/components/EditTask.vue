@@ -31,24 +31,26 @@
     ></b-form-textarea>
   </b-form-group>
   <tag-list v-model="selectedTagIds"></tag-list>
+  <b-button size="sm" class="float-right" variant="info" @click="addNewDuration">Add New</b-button>
+  <br/>
   <b-form-group
       label="Durations:"
     >
-    <div v-for="(duration, index) in durations" :key="JSON.stringify(duration)" class="form-row ml-3 mb-3">
+    <div v-for="duration in durations" :key="duration._id" :v-show="duration.action === 'delete'" class="form-row ml-3 mb-3">
       <div class="mr-2 mt-2">
         <label>From</label>
       </div>
       <div class="col-md-5">
-        <DateTime :datetime.sync="duration.from" />
+        <DateTime v-model="duration.from" @afterUpdate="updateDuration(duration)" />
       </div>
       <div class="mr-2 ml-1 mt-2">
         <label>To</label>
       </div>
       <div class="col">
-        <DateTime :datetime.sync="duration.to" />
+        <DateTime v-model="duration.to" @afterUpdate="updateDuration(duration)" />
       </div>
       <div>
-        <button @click="deleteDurationAt(index)" class="btn btn-danger"><b-icon-trash-fill></b-icon-trash-fill></button>
+        <button @click="deleteDuration(duration)" class="btn btn-danger"><b-icon-trash-fill></b-icon-trash-fill></button>
       </div>
     </div>
   </b-form-group>
@@ -75,6 +77,7 @@ import TaskEditModal from '@/utils/task-edit-modal'
 import TaskEdit from '@/models/task-edit'
 import { IpcInvoker } from '@/utils/ipc-invoker'
 import { IpcChannel } from '@/utils/ipc-channel'
+import { DurationEdit } from '@/models/duration-edit'
 
 @Component({
   components: {
@@ -85,7 +88,7 @@ import { IpcChannel } from '@/utils/ipc-channel'
 export default class EditTask extends Vue {
   public description: string | undefined = '';
 
-  public durations: Duration[] = [];
+  public durations: DurationEdit[] = [];
 
   public name = '';
 
@@ -115,6 +118,16 @@ export default class EditTask extends Vue {
     this.loadView()
   }
 
+  async addNewDuration () {
+    const duration = {
+      from: Date.now(),
+      to: Date.now(),
+      taskId: this.modal.taskId,
+      action: 'new'
+    } as DurationEdit
+    this.durations.push(duration)
+  }
+
   async loadView () {
     if (this.modal.taskId) {
       const task = await IpcInvoker.invoke(IpcChannel.FindOneTask, this.modal.taskId)
@@ -123,7 +136,7 @@ export default class EditTask extends Vue {
       this.selectedTagIds.push(...task.tagIds)
       this.task = task
       this.description = this.task.description
-      this.durations = durations
+      this.durations = durations as DurationEdit[]
       this.isClosed = this.task.isClosed
       this.name = this.task.name
     }
@@ -153,8 +166,12 @@ export default class EditTask extends Vue {
     await this.loadView()
   }
 
-  public deleteDurationAt (index: number) {
-    this.$delete(this.durations, index)
+  public deleteDuration (duration: DurationEdit) {
+    duration.action = 'delete'
+  }
+
+  public updateDuration (duration: DurationEdit) {
+    duration.action = 'edit'
   }
 }
 </script>

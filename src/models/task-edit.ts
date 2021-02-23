@@ -1,5 +1,5 @@
-import { Duration } from '@/models/duration'
 import { Guid16 } from '@/types/guid16'
+import { DurationEdit } from './duration-edit'
 
 export default class TaskEdit {
   name = ''
@@ -8,7 +8,7 @@ export default class TaskEdit {
 
   _id: Guid16 = ''
 
-  durations: Duration[] = []
+  durations: DurationEdit[] = []
 
   isClosed = false;
 
