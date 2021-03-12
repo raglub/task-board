@@ -1,70 +1,47 @@
 <template>
- <b-input-group>
-    <b-input-group-append>
-    <div style="width: 155px;" class="pr-0">
-      <b-input-group>
-        <b-form-input
-          id="date-input"
-          v-model="date"
-          type="text"
-          placeholder="YYYY-MM-DD"
-          autocomplete="off"
-        ></b-form-input>
-        <b-input-group-append>
-          <b-form-datepicker
-            v-model="date"
-            button-only
-            right
-            locale="en-US"
-            aria-controls="date-input"
-            @context="onContext"
-          ></b-form-datepicker>
-        </b-input-group-append>
-      </b-input-group>
+  <b-input-group :title="datetime">
+    <flat-pickr
+      v-model="datetime"
+      :config="config"
+      class="form-control"
+      @input="onDateChange"
+      placeholder="Select date"
+      name="date">
+    </flat-pickr>
+    <div class="input-group-append">
+      <button class="btn btn-success" type="button" title="Choose a date-time" data-toggle="">
+        <b-icon-calendar2-date/>
+      </button>
     </div>
-    <div style="width: 140px;" class="pl-1">
-      <b-input-group>
-        <b-form-input
-          id="time-input"
-          v-model="time"
-          type="text"
-          placeholder="HH:mm:ss"
-        ></b-form-input>
-        <b-input-group-append>
-          <b-form-timepicker
-            v-model="time"
-            button-only
-            right
-            show-seconds
-            @context="onContext"
-            locale="en"
-            aria-controls="time-input"
-          ></b-form-timepicker>
-        </b-input-group-append>
-      </b-input-group>
-    </div>
-    </b-input-group-append>
   </b-input-group>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+/* eslint @typescript-eslint/no-var-requires: "off" */
+/* eslint @typescript-eslint/camelcase: "off" */
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import Moment from 'moment'
+import 'flatpickr/dist/flatpickr.css'
+const flatPickr = require('vue-flatpickr-component')
 
-@Component
-export default class DateTime extends Vue {
-  public date = '';
-
-  public time = '';
-
-  @Watch('time')
-  onChangeTimeValue (newTime: string) {
-    this.$emit('afterUpdate')
+@Component({
+  components: {
+    flatPickr
   }
+})
+export default class DateTime extends Vue {
+  public datetime: string | null = '';
 
-  @Watch('date')
-  onChangeDateValue (newTime: string) {
-    this.$emit('afterUpdate')
+  public config = {
+    wrap: true, // set wrap to true only when using 'input-group'
+    altFormat: 'Y-m-d H:i:S',
+    altInput: true,
+    enableSeconds: true,
+    enableTime: true,
+    dateFormat: 'Y-m-d H:i:S',
+    minuteIncrement: 1,
+    secondIncrement: 1,
+    time_24hr: true
   }
 
   @Prop()
@@ -72,14 +49,14 @@ export default class DateTime extends Vue {
 
   constructor () {
     super()
-    this.time = Moment.unix(this.value / 1000).format('HH:mm:ss')
-    this.date = Moment.unix(this.value / 1000).format('YYYY-MM-DD')
+    this.datetime = Moment.unix(this.value / 1000).format('YYYY-MM-DD HH:mm:ss')
   }
 
-  onContext () {
-    let datetime = Moment(this.date + ' ' + this.time).unix()
+  onDateChange (selectedDates: any, dateStr: string, instance: any) {
+    let datetime = Moment(this.datetime).unix()
     datetime *= 1000
     this.$emit('input', datetime)
+    this.$emit('afterUpdate')
   }
 }
 </script>

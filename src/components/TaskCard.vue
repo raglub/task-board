@@ -1,21 +1,19 @@
 <template>
 <div class="task-card d-flex">
-  <span class="mt-1" style="font-size: 18px;">
+  <span class="mt-1 flex-grow-1" style="font-size: 18px; word-break: break-all;">
     <b-icon v-if="task.isClosed" variant="info" icon="check-circle-fill"></b-icon>
     <b-icon v-else variant="info" icon="check-circle"></b-icon>
     <span class="ml-2">{{ task.name }}</span>
   </span>
-  <span class="ml-auto">
-    <b-badge pill style="font-size: 18px;" variant="light">{{ duration }}</b-badge>
-    <b-button v-if="task.isRunning" class="ml-1" variant="secondary" @click="stopTask" size="sm">STOP</b-button>
-    <b-button v-else class="ml-1" size="sm" @click="startTask" variant="info">START</b-button>
-    <b-dropdown right variant="link" title="More options" toggle-class="text-decoration-none" no-caret>
+    <b-badge pill class="task-row" variant="light">{{ duration }}</b-badge>
+    <b-button v-if="task.isRunning" class="ml-1 task-row-btn" variant="secondary" @click="stopTask" size="sm">STOP</b-button>
+    <b-button v-else class="ml-1 task-row-btn" size="sm" @click="startTask" variant="info">START</b-button>
+    <b-dropdown size="sm" right variant="link" class="task-row" title="More options" toggle-class="text-decoration-none" no-caret>
       <template #button-content>
         <b-icon icon="three-dots-vertical"></b-icon>
       </template>
       <slot name="buttons"></slot>
     </b-dropdown>
-  </span>
 </div>
 </template>
 
@@ -83,5 +81,15 @@ export default class TaskCard extends Vue {
   padding: 10px 0 10px 10px !important;
   border-bottom: 1px solid #aaa;
   border-radius: 0 0 0 10px;
+}
+
+.task-row-btn {
+  height: 30px;
+  min-width: 60px;
+}
+
+.task-row {
+  height: 30px;
+  font-size: 18px;
 }
 </style>
