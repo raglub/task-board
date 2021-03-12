@@ -91,7 +91,7 @@ export default class Board extends Vue {
 
   public filter: TaskFilter
 
-  public canShowAddTaskModal = false;
+  public canShowAddTaskModal = false
 
   public selectedTagIds: Guid16[] = []
 
