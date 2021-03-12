@@ -37,6 +37,7 @@ jobs:
       run: |
         echo ${LATEST_TAG_DISTANCE}
         npm ci
+        npm run test:unit
         npm run electron:build:win -- -p always
     - name: npm ci, build and test (linux-only) 
       env:
@@ -44,6 +45,7 @@ jobs:
       if: contains(matrix.os, 'ubuntu')  
       run: |
         npm ci
+        npm run test:unit
         npm run electron:build:linux -- -p always
     - uses: actions/upload-artifact@v2
       with:
