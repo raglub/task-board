@@ -31,28 +31,21 @@
     ></b-form-textarea>
   </b-form-group>
   <tag-list v-model="selectedTagIds"></tag-list>
-  <b-button size="sm" class="float-right" variant="info" @click="addNewDuration">Add New</b-button>
-  <br/>
-  <b-form-group
-      label="Durations:"
-    >
-    <div v-for="duration in durations" :key="duration._id" :v-show="duration.action === 'delete'" class="form-row ml-3 mb-3">
-      <div class="mr-2 mt-2">
-        <label>From</label>
+  <b-form-group class="" label="Durations:">
+    <div v-for="duration in durations" :key="duration._id" class="d-flex">
+      <div class="p-1 w-100 d-inline-flex" v-if="duration.action!=='delete'">
+        <label class="m-2 align-self-center">From</label>
+        <DateTime class="align-self-center" v-model="duration.from" @afterUpdate="updateDuration(duration)" />
+        <label class="m-2 ml-3 align-self-center" align-self-center>To</label>
+        <DateTime class="align-self-center" v-model="duration.to" @afterUpdate="updateDuration(duration)" />
       </div>
-      <div class="col-md-5">
-        <DateTime v-model="duration.from" @afterUpdate="updateDuration(duration)" />
-      </div>
-      <div class="mr-2 ml-1 mt-2">
-        <label>To</label>
-      </div>
-      <div class="col">
-        <DateTime v-model="duration.to" @afterUpdate="updateDuration(duration)" />
-      </div>
-      <div>
-        <button @click="deleteDuration(duration)" class="btn btn-danger"><b-icon-trash-fill></b-icon-trash-fill></button>
+      <div class="flex-shrink-1" v-if="duration.action!=='delete'">
+        <b-button @click="deleteDuration(duration)" title="Delete duration" class="btn btn-danger mt-1">
+          <b-icon-trash2-fill/>
+        </b-button>
       </div>
     </div>
+    <b-button class="float-right" variant="info" @click="addNewDuration">Add Duration</b-button>
   </b-form-group>
   <b-form-checkbox
     id="checkbox-1"
@@ -167,15 +160,21 @@ export default class EditTask extends Vue {
   }
 
   public deleteDuration (duration: DurationEdit) {
+    const index = this.durations.indexOf(duration)
+    if (index > -1) {
+      this.durations.splice(index, 1)
+    }
     duration.action = 'delete'
+    this.durations.splice(index, 0, duration)
   }
 
   public updateDuration (duration: DurationEdit) {
-    duration.action = 'edit'
+    if (duration.action === null) {
+      duration.action = 'edit'
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-
 </style>
