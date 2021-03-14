@@ -24,3 +24,6 @@ pnpm-debug.log*
 /dist_electron
 
 /db
+
+tag_distance.txt
+version.txt

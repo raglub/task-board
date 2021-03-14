@@ -6,10 +6,9 @@ async function changeVersion () {
   const describe = await exec('git describe --tags')
   console.log(describe)
   const chunks = describe.stdout.split('-')
-  const tag = chunks[0]
-  let version = tag.substring(1)
-  const commitHash = chunks[2].substring(1).trim()
-  const distance = chunks[1]
+  const commitHash = chunks.pop().substring(1).trim()
+  const distance = chunks.pop()
+  let version = chunks.join('-').substring(1)
   if (distance !== '0') {
     version += `+${distance}-${commitHash}`
   }
