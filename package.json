@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "vue-cli-service test:unit --recursive 'tests/**/*.spec.ts'",
+    "test:watch": "vue-cli-service test:unit --watch --recursive 'tests/**/*.spec.ts'",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build --win nsis --linux deb --mac -p always",
     "electron:build:linux": "vue-cli-service electron:build --linux",
