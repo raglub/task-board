@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import Moment from 'moment'
 import { shallowMount } from '@vue/test-utils'
 import DateTime from '@/components/DateTime.vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
@@ -15,6 +16,8 @@ describe('DateTime.vue', () => {
     const wrapper = shallowMount(DateTime, {
       propsData: { value }
     })
-    expect(wrapper.attributes('title')).to.include('1970-01-01 01:00:13')
+    const stillUtc = Moment.utc(value).toDate()
+    const datetime = Moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+    expect(wrapper.attributes('title')).to.include(datetime)
   })
 })
