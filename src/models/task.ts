@@ -1,6 +1,6 @@
-import { Duration } from '@/utils/duration'
 import { plainToClass } from 'class-transformer'
 import { Guid16 } from '@/types/guid16'
+import { TaskStatuses } from '@/utils/taskStatuses'
 
 export default class Task {
   name: string;
@@ -12,6 +12,8 @@ export default class Task {
 
   isRunning: boolean;
 
+  status: TaskStatuses;
+
   tagIds: string[] = []
 
   constructor (name = 'none') {
@@ -21,6 +23,7 @@ export default class Task {
     this.parentId = undefined
     this.isClosed = false
     this.isRunning = false
+    this.status = TaskStatuses.Todo
   }
 
   static cast (rawTask: Task): Task {
