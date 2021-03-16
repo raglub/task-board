@@ -31,6 +31,9 @@
     ></b-form-textarea>
   </b-form-group>
   <tag-list v-model="selectedTagIds"></tag-list>
+  <b-form-group class="" label="Status:">
+    <b-form-select v-model="status" :options="statuses"></b-form-select>
+  </b-form-group>
   <b-form-group class="" label="Durations:">
     <div v-for="duration in durations" :key="duration._id" class="d-flex">
       <div class="p-1 w-100 d-inline-flex" v-if="duration.action!=='delete'">
@@ -71,6 +74,7 @@ import TaskEdit from '@/models/task-edit'
 import { IpcInvoker } from '@/utils/ipc-invoker'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { DurationEdit } from '@/models/duration-edit'
+import { TaskStatuses } from '@/utils/taskStatuses'
 
 @Component({
   components: {
@@ -79,18 +83,26 @@ import { DurationEdit } from '@/models/duration-edit'
   }
 })
 export default class EditTask extends Vue {
-  public description: string | undefined = '';
+  public description: string | undefined = ''
 
-  public durations: DurationEdit[] = [];
+  public durations: DurationEdit[] = []
 
-  public name = '';
+  public name = ''
 
   public isClosed = false;
 
   @Prop()
-  private modal!: TaskEditModal;
+  private modal!: TaskEditModal
 
-  private task: Task | undefined;
+  private status: TaskStatuses = TaskStatuses.Todo
+
+  private statuses: any[] = [
+    { value: TaskStatuses.Todo, text: 'To do' },
+    { value: TaskStatuses.InProgress, text: 'In progress' },
+    { value: TaskStatuses.Done, text: 'Done' }
+  ]
+
+  private task: Task | undefined
 
   public selectedTagIds: Guid16[] = []
 
@@ -132,6 +144,7 @@ export default class EditTask extends Vue {
       this.durations = durations as DurationEdit[]
       this.isClosed = this.task.isClosed
       this.name = this.task.name
+      this.status = this.task.status
     }
   }
 
@@ -144,7 +157,9 @@ export default class EditTask extends Vue {
       taskEdit.durations = this.durations
       taskEdit.isClosed = this.isClosed
       taskEdit.tagIds = this.selectedTagIds
+      taskEdit.status = this.status
       IpcInvoker.invoke(IpcChannel.UpdateTask, taskEdit)
+      this.$emit('refreshTasks')
     }
   }
 

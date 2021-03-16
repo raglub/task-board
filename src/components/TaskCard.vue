@@ -1,8 +1,9 @@
 <template>
 <div class="task-card d-flex">
   <span class="mt-1 flex-grow-1" style="font-size: 18px; word-break: break-all;">
-    <b-icon v-if="task.isClosed" variant="info" icon="check-circle-fill"></b-icon>
-    <b-icon v-else variant="info" icon="check-circle"></b-icon>
+    <b-icon-circle v-if="isTodo" variant="secondary"/>
+    <b-icon-clock-fill v-if="isInProgress" variant="warning"/>
+    <b-icon-check-circle-fill v-if="isDone" variant="success"/>
     <span class="ml-2">{{ task.name }}</span>
   </span>
     <b-badge pill class="task-row" variant="light">{{ duration }}</b-badge>
@@ -22,6 +23,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import Task from '@/models/task'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { IpcInvoker } from '@/utils/ipc-invoker'
+import { TaskStatuses } from '@/utils/taskStatuses'
 
 @Component({
   components: {
@@ -44,6 +46,18 @@ export default class TaskCard extends Vue {
 
   destroyed () {
     clearInterval(this.interval)
+  }
+
+  get isTodo () {
+    return this.task.status === TaskStatuses.Todo
+  }
+
+  get isInProgress () {
+    return this.task.status === TaskStatuses.InProgress
+  }
+
+  get isDone () {
+    return this.task.status === TaskStatuses.Done
   }
 
   async loadView () {

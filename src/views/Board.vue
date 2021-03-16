@@ -52,7 +52,7 @@
         </b-pagination>
       </div>
       <new-task @addTask="addTask"/>
-      <edit-task :modal="taskEditModalData" />
+      <edit-task :modal="taskEditModalData" @refreshTasks="refreshList" />
       <new-tag/>
     </b-container>
 </template>
