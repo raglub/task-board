@@ -92,6 +92,7 @@ export class TasksStore {
     task.isClosed = taskEdit.isClosed
     task.isRunning = taskEdit.isRunning
     task.name = taskEdit.name
+    task.status = taskEdit.status
     task.tagIds = taskEdit.tagIds
     await TasksStore.db.update({ _id: task._id }, task)
     const durationStore = new DurationsStore()
