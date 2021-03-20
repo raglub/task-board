@@ -1,5 +1,5 @@
 import { Guid16 } from '@/types/guid16'
-import { TaskStatuses } from '@/utils/taskStatuses'
+import { TaskStatus } from '@/utils/taskStatus'
 import { DurationEdit } from './duration-edit'
 
 export default class TaskEdit {
@@ -17,5 +17,5 @@ export default class TaskEdit {
 
   tagIds: string[] = []
 
-  status = TaskStatuses.Todo
+  status = TaskStatus.Todo
 }

@@ -74,7 +74,7 @@ import TaskEdit from '@/models/task-edit'
 import { IpcInvoker } from '@/utils/ipc-invoker'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { DurationEdit } from '@/models/duration-edit'
-import { TaskStatuses } from '@/utils/taskStatuses'
+import { TaskStatus } from '@/utils/taskStatus'
 
 @Component({
   components: {
@@ -94,12 +94,12 @@ export default class EditTask extends Vue {
   @Prop()
   private modal!: TaskEditModal
 
-  private status: TaskStatuses = TaskStatuses.Todo
+  private status: TaskStatus = TaskStatus.Todo
 
   private statuses: any[] = [
-    { value: TaskStatuses.Todo, text: 'To do' },
-    { value: TaskStatuses.InProgress, text: 'In progress' },
-    { value: TaskStatuses.Done, text: 'Done' }
+    { value: TaskStatus.Todo, text: 'To do' },
+    { value: TaskStatus.InProgress, text: 'In progress' },
+    { value: TaskStatus.Done, text: 'Done' }
   ]
 
   private task: Task | undefined
