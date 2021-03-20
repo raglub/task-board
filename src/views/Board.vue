@@ -22,17 +22,22 @@
           </b-dropdown>
         </b-col>
       </b-row>
-      <b-row class="mb-1 mt-2">
+      <b-row class="mb-0 mt-0">
         <b-col>
           <tag-list v-model="selectedTagIds" @input="refreshList"></tag-list>
         </b-col>
       </b-row>
-      <b-form-checkbox
-        v-model="filter.showClosed"
-        @input="refreshList"
-      >
-        Show closed
-      </b-form-checkbox>
+      <b-row class="mb-0 mt-0">
+        <b-col>
+          <b-form-group label="Statuses:">
+            <b-form-checkbox-group id="tags-group" v-model="statuses" @input="refreshList" name="flavour-2">
+              <b-form-checkbox :value="TaskStatus.Todo">To do</b-form-checkbox>
+              <b-form-checkbox :value="TaskStatus.InProgress">In progress</b-form-checkbox>
+              <b-form-checkbox :value="TaskStatus.Done">Done</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-row v-for="task in tasks" class="mb-2 mt-2" :key="task._id">
         <b-col>
           <TaskCard v-bind:task="task" @refreshTasks="refreshList">
@@ -68,6 +73,7 @@ import EditTask from '@/components/EditTask.vue'
 import { Guid16 } from '@/types/guid16'
 import TaskFilter from '@/utils/task-filter'
 import TaskEditModal from '@/utils/task-edit-modal'
+import { TaskStatus } from '@/utils/taskStatus'
 
 @Component({
   components: {
@@ -87,6 +93,9 @@ export default class Board extends Vue {
   public tasks: Task[] = []
   public isLoading = false;
 
+  // necessary to use in template
+  TaskStatus: any = TaskStatus;
+
   public taskEditModalData = new TaskEditModal()
 
   public filter: TaskFilter
@@ -95,10 +104,13 @@ export default class Board extends Vue {
 
   public selectedTagIds: Guid16[] = []
 
+  public statuses: TaskStatus[] = [TaskStatus.Todo, TaskStatus.InProgress]
+
   public async refreshList () {
     this.filter.searchText = this.searchText
     this.filter.page = this.currentPage
     this.filter.tagIds = this.selectedTagIds
+    this.filter.statuses = this.statuses
     this.totalPages = await this.$store.direct.dispatch.countTasks(this.filter)
     const tasks = await this.$store.direct.dispatch.loadTasks(this.filter)
     this.tasks = tasks

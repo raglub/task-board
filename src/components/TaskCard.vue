@@ -23,7 +23,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import Task from '@/models/task'
 import { IpcChannel } from '@/utils/ipc-channel'
 import { IpcInvoker } from '@/utils/ipc-invoker'
-import { TaskStatuses } from '@/utils/taskStatuses'
+import { TaskStatus } from '@/utils/taskStatus'
 
 @Component({
   components: {
@@ -49,15 +49,15 @@ export default class TaskCard extends Vue {
   }
 
   get isTodo () {
-    return this.task.status === TaskStatuses.Todo
+    return this.task.status === TaskStatus.Todo
   }
 
   get isInProgress () {
-    return this.task.status === TaskStatuses.InProgress
+    return this.task.status === TaskStatus.InProgress
   }
 
   get isDone () {
-    return this.task.status === TaskStatuses.Done
+    return this.task.status === TaskStatus.Done
   }
 
   async loadView () {

@@ -72,12 +72,17 @@ export class TasksStore {
     if (filter.searchText !== '') {
       query['name'] = new RegExp(filter.searchText, 'i')
     }
+    query['$and'] = []
+    query['$or'] = []
     if (filter.tagIds.length > 0) {
-      const tagIdsQuery: any[] = []
       filter.tagIds.forEach(id => {
-        tagIdsQuery.push({ tagIds: id })
+        query['$and'].push({ tagIds: id })
       })
-      query['$and'] = tagIdsQuery
+    }
+    if (filter.statuses.length > 0) {
+      filter.statuses.forEach(status => {
+        query['$or'].push({ status: status })
+      })
     }
     return query
   }
