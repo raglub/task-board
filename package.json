@@ -27,7 +27,7 @@
     "core-js": "^3.6.5",
     "direct-vuex": "^0.12.1",
     "electron-typed-ipc": "^0.1.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.23",
     "moment": "^2.27.0",
     "nedb": "^1.8.0",
     "nedb-promises": "^4.0.3",
